@@ -47,7 +47,7 @@ jobs:
     parameters:
       xcodeVersion: ${{ variables.xcodeVersion }}
 
-  # - template: templates/install-appcenter.yml
+  - template: templates/install-appcenter.yml
 
   - script: |
       pip install -r tools/ci_build/github/requirements.txt
@@ -89,18 +89,18 @@ jobs:
 
   # create and test full pods
   - script: |
-      python tools/ci_build/github/apple/build_and_assemble_ios_pods.py \
+      python tools/ci_build/github/scripts/build_and_assemble_ios_pods.py \
         --build-dir "$(Build.BinariesDirectory)/ios_framework_full" \
         --staging-dir "$(Build.BinariesDirectory)/staging" \
         --pod-version "${ORT_POD_VERSION}" \
         --test \
         --variant Full \
-        --build-settings-file tools/ci_build/github/apple/default_full_ios_framework_build_settings.json \
+        --build-settings-file tools/ci_build/github/default_full_ios_framework_build_settings.json \
         -b="--path_to_protoc_exe" -b "$(Build.BinariesDirectory)/protobuf_install/bin/protoc"
     displayName: "[Full] Build iOS framework and assemble pod package files"
 
   - script: |
-      python tools/ci_build/github/apple/test_ios_packages.py \
+      python tools/ci_build/github/scripts/test_ios_packages.py \
         --fail_if_cocoapods_missing \
         --framework_info_file "$(Build.BinariesDirectory)/ios_framework_full/framework_info.json" \
         --c_framework_dir "$(Build.BinariesDirectory)/ios_framework_full/framework_out" \
@@ -123,16 +123,16 @@ jobs:
       workingDirectory: $(Build.BinariesDirectory)/app_center_test_full/ios_package_test/
     displayName: '[Full] Build iphone arm64 tests'
 
-  # - script: |
-  #     set -e -x
-  #     appcenter test run xcuitest \
-  #       --app "AI-Frameworks/ORT-Mobile-iOS" \
-  #       --devices $(app_center_test_devices) \
-  #       --test-series "master" \
-  #       --locale "en_US" \
-  #       --build-dir $(Build.BinariesDirectory)/app_center_test_full/ios_package_test/DerivedData/Build/Products/Debug-iphoneos \
-  #       --token $(app_center_api_token)
-  #   displayName: "[Full] Run E2E tests on App Center"
+  - script: |
+      set -e -x
+      appcenter test run xcuitest \
+        --app "AI-Frameworks/ORT-Mobile-iOS" \
+        --devices $(app_center_test_devices) \
+        --test-series "master" \
+        --locale "en_US" \
+        --build-dir $(Build.BinariesDirectory)/app_center_test_full/ios_package_test/DerivedData/Build/Products/Debug-iphoneos \
+        --token $(app_center_api_token)
+    displayName: "[Full] Run E2E tests on App Center"
 
   - task: AzureCLI@2
     inputs:
