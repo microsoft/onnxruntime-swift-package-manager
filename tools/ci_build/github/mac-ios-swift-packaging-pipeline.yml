@@ -11,7 +11,7 @@ parameters:
 name: "$(Date:yyyyMMdd)$(Rev:rrr)"  # build number format
 
 jobs:
-- job: SPM-IosPackaging
+- job: SPMIosPackaging
   displayName: "SPM iOS Packaging"
 
   pool:
