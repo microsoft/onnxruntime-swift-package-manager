@@ -11,8 +11,8 @@ parameters:
 name: "$(Date:yyyyMMdd)$(Rev:rrr)"  # build number format
 
 jobs:
-- job: IosPackaging
-  displayName: "iOS Packaging"
+- job: SPM-IosPackaging
+  displayName: "SPM iOS Packaging"
 
   pool:
     vmImage: "macOS-13"
@@ -50,7 +50,7 @@ jobs:
   # - template: templates/install-appcenter.yml
 
   - script: |
-      pip install -r tools/ci_build/github/apple/ios_packaging.requirements.txt
+      pip install -r tools/ci_build/github/requirements.txt
     displayName: "Install Python requirements"
 
   - bash: |
