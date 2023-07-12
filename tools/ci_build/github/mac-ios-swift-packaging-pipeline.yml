@@ -23,19 +23,19 @@ jobs:
   timeoutInMinutes: 300
 
   steps:
-  - task: InstallAppleCertificate@2
-    inputs:
-      certSecureFile: '$(ios_signing_certificate_name)'
-      certPwd: '$(ios_signing_certificate_password)'
-      keychain: 'temp'
-      deleteCert: true
-    displayName: 'Install ORT Mobile Test Signing Certificate'
+  # - task: InstallAppleCertificate@2
+  #   inputs:
+  #     certSecureFile: '$(ios_signing_certificate_name)'
+  #     certPwd: '$(ios_signing_certificate_password)'
+  #     keychain: 'temp'
+  #     deleteCert: true
+  #   displayName: 'Install ORT Mobile Test Signing Certificate'
 
-  - task: InstallAppleProvisioningProfile@1
-    inputs:
-      provProfileSecureFile: '$(ios_provision_profile_name)'
-      removeProfile: true
-    displayName: 'Install ORT Mobile Test Provisioning Profile'
+  # - task: InstallAppleProvisioningProfile@1
+  #   inputs:
+  #     provProfileSecureFile: '$(ios_provision_profile_name)'
+  #     removeProfile: true
+  #   displayName: 'Install ORT Mobile Test Provisioning Profile'
 
   - task: UsePythonVersion@0
     inputs:
@@ -47,7 +47,7 @@ jobs:
     parameters:
       xcodeVersion: ${{ variables.xcodeVersion }}
 
-  - template: templates/install-appcenter.yml
+  # - template: templates/install-appcenter.yml
 
   - script: |
       pip install -r tools/ci_build/github/requirements.txt
