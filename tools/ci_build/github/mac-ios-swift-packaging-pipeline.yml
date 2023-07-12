@@ -149,11 +149,13 @@ jobs:
 
   # TODO: Download artifacts from the onnxruntime-ios-packaging pipeline artifacts folder
 
-  - task: DownloadPipelineArtifact@0
+  # Download artifacts from a specific pipeline.
+  - task: DownloadPipelineArtifact@2
     inputs:
-      pipelineId: '326908'  #The specific pipeline to download from. 
-      artifactName: 'ios_packaging_artifacts' # string. Required. The name of artifact to download. Default: drop.
-      targetPath: "$(Build.ArtifactStagingDirectory)" # string. Required. Path to download to.
+      buildType: 'normal'
+      definition: 995
+      buildVersionToDownload: 'latest'
+      targetPath: '$(Build.ArtifactStagingDirectory)'
 
   - script: |
       set -e -x
