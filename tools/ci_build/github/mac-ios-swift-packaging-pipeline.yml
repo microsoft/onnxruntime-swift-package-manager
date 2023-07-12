@@ -152,6 +152,8 @@ jobs:
   # Download artifacts from a specific pipeline.
   - task: DownloadPipelineArtifact@2
     inputs:
+      buildType: 'specific'
+      project: 'Lotus'
       definition: 995
       buildVersionToDownload: 'latest'
       targetPath: '$(Build.ArtifactStagingDirectory)'
