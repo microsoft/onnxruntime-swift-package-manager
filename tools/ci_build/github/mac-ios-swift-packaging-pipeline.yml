@@ -152,7 +152,6 @@ jobs:
   # Download artifacts from a specific pipeline.
   - task: DownloadPipelineArtifact@2
     inputs:
-      buildType: 'normal'
       definition: 995
       buildVersionToDownload: 'latest'
       targetPath: '$(Build.ArtifactStagingDirectory)'
