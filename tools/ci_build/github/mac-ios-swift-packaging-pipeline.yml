@@ -83,69 +83,77 @@ jobs:
       set_var "ORT_SHOULD_UPLOAD_ARCHIVES" "${SHOULD_UPLOAD_ARCHIVES}"
     displayName: "Set variables"
 
-  - script: |
-      $(Build.SourcesDirectory)/tools/ci_build/github/scripts/install_protobuf.sh -p $(Build.BinariesDirectory)/protobuf_install -d $(Build.SourcesDirectory)/cmake/deps.txt
-    displayName: "Build Host Protoc"
+  # - script: |
+  #     $(Build.SourcesDirectory)/tools/ci_build/github/scripts/install_protobuf.sh -p $(Build.BinariesDirectory)/protobuf_install -d $(Build.SourcesDirectory)/cmake/deps.txt
+  #   displayName: "Build Host Protoc"
 
-  # create and test full pods
-  - script: |
-      python tools/ci_build/github/scripts/build_and_assemble_ios_pods.py \
-        --build-dir "$(Build.BinariesDirectory)/ios_framework_full" \
-        --staging-dir "$(Build.BinariesDirectory)/staging" \
-        --pod-version "${ORT_POD_VERSION}" \
-        --test \
-        --variant Full \
-        --build-settings-file tools/ci_build/github/default_full_ios_framework_build_settings.json \
-        -b="--path_to_protoc_exe" -b "$(Build.BinariesDirectory)/protobuf_install/bin/protoc"
-    displayName: "[Full] Build iOS framework and assemble pod package files"
+  # # create and test full pods
+  # - script: |
+  #     python tools/ci_build/github/scripts/build_and_assemble_ios_pods.py \
+  #       --build-dir "$(Build.BinariesDirectory)/ios_framework_full" \
+  #       --staging-dir "$(Build.BinariesDirectory)/staging" \
+  #       --pod-version "${ORT_POD_VERSION}" \
+  #       --test \
+  #       --variant Full \
+  #       --build-settings-file tools/ci_build/github/default_full_ios_framework_build_settings.json \
+  #       -b="--path_to_protoc_exe" -b "$(Build.BinariesDirectory)/protobuf_install/bin/protoc"
+  #   displayName: "[Full] Build iOS framework and assemble pod package files"
 
-  - script: |
-      python tools/ci_build/github/scripts/test_ios_packages.py \
-        --fail_if_cocoapods_missing \
-        --framework_info_file "$(Build.BinariesDirectory)/ios_framework_full/framework_info.json" \
-        --c_framework_dir "$(Build.BinariesDirectory)/ios_framework_full/framework_out" \
-        --variant Full \
-        --test_project_stage_dir "$(Build.BinariesDirectory)/app_center_test_full" \
-        --prepare_test_project_only
-    displayName: "[Full] Assemble test project for App Center"
+  # - script: |
+  #     python tools/ci_build/github/scripts/test_ios_packages.py \
+  #       --fail_if_cocoapods_missing \
+  #       --framework_info_file "$(Build.BinariesDirectory)/ios_framework_full/framework_info.json" \
+  #       --c_framework_dir "$(Build.BinariesDirectory)/ios_framework_full/framework_out" \
+  #       --variant Full \
+  #       --test_project_stage_dir "$(Build.BinariesDirectory)/app_center_test_full" \
+  #       --prepare_test_project_only
+  #   displayName: "[Full] Assemble test project for App Center"
 
-  - task: Xcode@5
-    inputs:
-      actions: 'build-for-testing'
-      configuration: 'Debug'
-      xcWorkspacePath: '$(Build.BinariesDirectory)/app_center_test_full/ios_package_test/ios_package_test.xcworkspace'
-      sdk: 'iphoneos'
-      scheme: 'ios_package_test'
-      signingOption: 'manual'
-      signingIdentity: '$(APPLE_CERTIFICATE_SIGNING_IDENTITY)'
-      provisioningProfileName: 'iOS Team Provisioning Profile'
-      args: '-derivedDataPath $(Build.BinariesDirectory)/app_center_test_full/ios_package_test/DerivedData'
-      workingDirectory: $(Build.BinariesDirectory)/app_center_test_full/ios_package_test/
-    displayName: '[Full] Build iphone arm64 tests'
+  # - task: Xcode@5
+  #   inputs:
+  #     actions: 'build-for-testing'
+  #     configuration: 'Debug'
+  #     xcWorkspacePath: '$(Build.BinariesDirectory)/app_center_test_full/ios_package_test/ios_package_test.xcworkspace'
+  #     sdk: 'iphoneos'
+  #     scheme: 'ios_package_test'
+  #     signingOption: 'manual'
+  #     signingIdentity: '$(APPLE_CERTIFICATE_SIGNING_IDENTITY)'
+  #     provisioningProfileName: 'iOS Team Provisioning Profile'
+  #     args: '-derivedDataPath $(Build.BinariesDirectory)/app_center_test_full/ios_package_test/DerivedData'
+  #     workingDirectory: $(Build.BinariesDirectory)/app_center_test_full/ios_package_test/
+  #   displayName: '[Full] Build iphone arm64 tests'
 
-  - script: |
-      set -e -x
-      appcenter test run xcuitest \
-        --app "AI-Frameworks/ORT-Mobile-iOS" \
-        --devices $(app_center_test_devices) \
-        --test-series "master" \
-        --locale "en_US" \
-        --build-dir $(Build.BinariesDirectory)/app_center_test_full/ios_package_test/DerivedData/Build/Products/Debug-iphoneos \
-        --token $(app_center_api_token)
-    displayName: "[Full] Run E2E tests on App Center"
+  # - script: |
+  #     set -e -x
+  #     appcenter test run xcuitest \
+  #       --app "AI-Frameworks/ORT-Mobile-iOS" \
+  #       --devices $(app_center_test_devices) \
+  #       --test-series "master" \
+  #       --locale "en_US" \
+  #       --build-dir $(Build.BinariesDirectory)/app_center_test_full/ios_package_test/DerivedData/Build/Products/Debug-iphoneos \
+  #       --token $(app_center_api_token)
+  #   displayName: "[Full] Run E2E tests on App Center"
 
-  - task: AzureCLI@2
-    inputs:
-      azureSubscription: 'AIInfraBuildOnnxRuntimeOSS'
-      scriptType: 'bash'
-      scriptLocation: 'scriptPath'
-      scriptPath: 'tools/ci_build/github/apple/assemble_ios_packaging_artifacts.sh'
-      arguments: >-
-        "$(Build.BinariesDirectory)/staging"
-        "$(Build.ArtifactStagingDirectory)"
-        "$(ORT_POD_VERSION)"
-        "$(ORT_SHOULD_UPLOAD_ARCHIVES)"
-    displayName: "Assemble artifacts"
+  # - task: AzureCLI@2
+  #   inputs:
+  #     azureSubscription: 'AIInfraBuildOnnxRuntimeOSS'
+  #     scriptType: 'bash'
+  #     scriptLocation: 'scriptPath'
+  #     scriptPath: 'tools/ci_build/github/apple/assemble_ios_packaging_artifacts.sh'
+  #     arguments: >-
+  #       "$(Build.BinariesDirectory)/staging"
+  #       "$(Build.ArtifactStagingDirectory)"
+  #       "$(ORT_POD_VERSION)"
+  #       "$(ORT_SHOULD_UPLOAD_ARCHIVES)"
+  #   displayName: "Assemble artifacts"
+
+  # TODO: Download artifacts from the onnxruntime-ios-packaging pipeline artifacts folder
+
+  - task: DownloadPipelineArtifact@0
+  inputs:
+    pipelineId: '995'  #The specific pipeline to download from. 
+    artifactName: 'ios_packaging_artifacts' # string. Required. The name of artifact to download. Default: drop.
+    targetPath: "$(Build.ArtifactStagingDirectory)" # string. Required. Path to download to.
 
   - script: |
       set -e -x
@@ -161,18 +169,18 @@ jobs:
   # copy the pod archive to a path relative to Package.swift and set the env var required by Package.swift to use that.
   # xcodebuild will implicitly use Package.swift and build/run the .testTarget (tests in swift/onnxTests).
   # once that's done cleanup the copy of the pod zip file
-  - script: |
-      set -e -x
-      cp "$(Build.ArtifactStagingDirectory)/pod-archive-onnxruntime-c-${ORT_POD_VERSION}.zip" swift/
-      export ORT_IOS_POD_LOCAL_PATH="swift/pod-archive-onnxruntime-c-${ORT_POD_VERSION}.zip"
-      xcodebuild test -scheme onnxruntime -destination 'platform=iOS Simulator,name=iPhone 14'
-      rm swift/pod-archive-onnxruntime-c-*.zip
-    displayName: "Test Package.swift usage"
+  # - script: |
+  #     set -e -x
+  #     cp "$(Build.ArtifactStagingDirectory)/pod-archive-onnxruntime-c-${ORT_POD_VERSION}.zip" swift/
+  #     export ORT_IOS_POD_LOCAL_PATH="swift/pod-archive-onnxruntime-c-${ORT_POD_VERSION}.zip"
+  #     xcodebuild test -scheme onnxruntime -destination 'platform=iOS Simulator,name=iPhone 14'
+  #     rm swift/pod-archive-onnxruntime-c-*.zip
+  #   displayName: "Test Package.swift usage"
 
-  - publish: "$(Build.ArtifactStagingDirectory)"
-    artifact: ios_packaging_artifacts
-    displayName: "Publish artifacts"
+  # - publish: "$(Build.ArtifactStagingDirectory)"
+  #   artifact: ios_packaging_artifacts
+  #   displayName: "Publish artifacts"
 
-  - template: templates/component-governance-component-detection-steps.yml
-    parameters :
-      condition : 'succeeded'
+  # - template: templates/component-governance-component-detection-steps.yml
+  #   parameters :
+  #     condition : 'succeeded'
