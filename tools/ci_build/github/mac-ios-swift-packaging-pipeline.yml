@@ -168,7 +168,7 @@ jobs:
       set -e -x
       ARTIFACTS_LIST=$(ls)
       POD_ARCHIVE=$(echo "${ARTIFACTS_LIST}" | sed -n '5p')
-      echo "##vso[task.setvariable variable='POD_ARCHIVE_NAME']${POD_ARCHIVE}"
+      echo "##vso[task.setvariable variable=POD_ARCHIVE_NAME]${POD_ARCHIVE}"
       shasum -a 256 "${POD_ARCHIVE_NAME}"
     workingDirectory: '$(Build.ArtifactStagingDirectory)/ios_packaging_artifacts'
     displayName: "Print ORT iOS Pod checksum"
