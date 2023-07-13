@@ -160,14 +160,16 @@ jobs:
 
   - script: |
       set -e -x
-      ls -R "$(Build.ArtifactStagingDirectory)"
+      ls
+    workingDirectory: '$(Build.ArtifactStagingDirectory)"/ios_packaging_artifacts'
     displayName: "List staged artifacts"
 
   - script: |
       set -e -x
-      ARTIFACTS_LIST=$(ls -R "$(Build.ArtifactStagingDirectory)")
+      ARTIFACTS_LIST=$(ls)
       POD_ARCHIVE=$(echo "${ARTIFACTS_LIST}" | cut -d$'\n' -f5)
       shasum -a 256 "${POD_ARCHIVE}"
+    workingDirectory: '$(Build.ArtifactStagingDirectory)"/ios_packaging_artifacts'
     displayName: "Print ORT iOS Pod checksum"
 
 
