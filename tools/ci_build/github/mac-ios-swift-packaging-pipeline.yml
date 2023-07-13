@@ -180,8 +180,8 @@ jobs:
   # once that's done cleanup the copy of the pod zip file
   - script: |
       set -e -x
-      cp "$(Build.ArtifactStagingDirectory)/ios_packaging_artifacts/${POD_ARCHIVE}" swift/
-      export ORT_IOS_POD_LOCAL_PATH="swift/${POD_ARCHIVE}"
+      cp "$(Build.ArtifactStagingDirectory)/ios_packaging_artifacts/${{ variables.podArchive }}" swift/
+      export ORT_IOS_POD_LOCAL_PATH="swift/${{ variables.podArchive }}"
       xcodebuild test -scheme onnxruntime -destination 'platform=iOS Simulator,name=iPhone 14'
       rm swift/pod-archive-onnxruntime-c-*.zip
     workingDirectory: $(Build.SourcesDirectory)
