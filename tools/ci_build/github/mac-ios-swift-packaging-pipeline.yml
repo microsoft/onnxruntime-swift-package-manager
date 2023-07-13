@@ -171,7 +171,7 @@ jobs:
       POD_ARCHIVE=$(echo "${ARTIFACTS_LIST}" | sed -n '3p')
       echo ${POD_ARCHIVE}
       echo "##vso[task.setvariable variable=podArchiveName]${POD_ARCHIVE}"
-      shasum -a 256 "$(podArchiveName)"
+      shasum -a 256 "${POD_ARCHIVE}"
     workingDirectory: '$(Build.ArtifactStagingDirectory)/ios_packaging_artifacts_full'
     displayName: "Print ORT iOS Pod checksum"
 
