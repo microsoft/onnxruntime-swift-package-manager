@@ -165,8 +165,8 @@ jobs:
 
   - script: |
       set -e -x
-      ARTIFACTS_LIST=${ls -R "$(Build.ArtifactStagingDirectory)"}
-      POD_ARCHIVE=${echo "${ARTIFACTS_LIST}" | cut -d$'\n' -f5}
+      ARTIFACTS_LIST=$(ls -R "$(Build.ArtifactStagingDirectory)")
+      POD_ARCHIVE=$(echo "${ARTIFACTS_LIST}" | cut -d$'\n' -f5)
       shasum -a 256 "${POD_ARCHIVE}"
     displayName: "Print ORT iOS Pod checksum"
 
