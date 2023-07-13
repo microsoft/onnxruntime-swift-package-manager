@@ -176,13 +176,12 @@ jobs:
 
       shasum -a 256 "$(Build.ArtifactStagingDirectory)/ios_packaging_artifacts_full/${POD_ARCHIVE}"
       
-      ls -R
-
-      cp "$(Build.ArtifactStagingDirectory)/ios_packaging_artifacts_full/${POD_ARCHIVE}" swift/
-      
-      export ORT_IOS_POD_LOCAL_PATH="swift/${POD_ARCHIVE}"
+      ls -R "$(Build.SourcesDirectory)"
+      cp "$(Build.ArtifactStagingDirectory)/ios_packaging_artifacts_full/${POD_ARCHIVE}" "$(Build.SourcesDirectory)/swift/"
+      export ORT_IOS_POD_LOCAL_PATH="$(Build.SourcesDirectory)/swift/${POD_ARCHIVE}"
       xcodebuild test -scheme onnxruntime -destination 'platform=iOS Simulator,name=iPhone 14'
       rm swift/pod-archive-onnxruntime-c-*.zip
+      
     displayName: "Test Package.swift usage"
 
   # - publish: "$(Build.ArtifactStagingDirectory)"
