@@ -171,6 +171,7 @@ jobs:
   # once that's done cleanup the copy of the pod zip file
   - script: |
       set -e -x
+      cd "$(Build.ArtifactStagingDirectory)/ios_packaging_artifacts_full"
       ARTIFACTS_LIST=$(ls)
       POD_ARCHIVE=$(echo "${ARTIFACTS_LIST}" | sed -n '3p')
 
