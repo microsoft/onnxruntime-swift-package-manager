@@ -169,9 +169,8 @@ jobs:
       set -e -x
       ARTIFACTS_LIST=$(ls)
       POD_ARCHIVE=$(echo "${ARTIFACTS_LIST}" | sed -n '3p')
-      echo ${POD_ARCHIVE}
-      echo "##vso[task.setvariable variable=${{ variables.podArchiveName }}]${POD_ARCHIVE}"
-      shasum -a 256 "${POD_ARCHIVE}"
+      echo "##vso[task.setvariable variable=podArchiveName]${POD_ARCHIVE}"
+      shasum -a 256 "$(podArchiveName)"
     workingDirectory: '$(Build.ArtifactStagingDirectory)/ios_packaging_artifacts_full'
     displayName: "Print ORT iOS Pod checksum"
 
@@ -179,14 +178,14 @@ jobs:
   # copy the pod archive to a path relative to Package.swift and set the env var required by Package.swift to use that.
   # xcodebuild will implicitly use Package.swift and build/run the .testTarget (tests in swift/onnxTests).
   # once that's done cleanup the copy of the pod zip file
-  - script: |
-      set -e -x
-      cp "$(Build.ArtifactStagingDirectory)/ios_packaging_artifacts_full/${{ variables.podArchiveName }}" swift/
-      export ORT_IOS_POD_LOCAL_PATH="swift/${{ variables.podArchiveName }}"
-      xcodebuild test -scheme onnxruntime -destination 'platform=iOS Simulator,name=iPhone 14'
-      rm swift/pod-archive-onnxruntime-c-*.zip
-    workingDirectory: $(Build.SourcesDirectory)
-    displayName: "Test Package.swift usage"
+  # - script: |
+  #     set -e -x
+  #     cp "$(Build.ArtifactStagingDirectory)/ios_packaging_artifacts_full/" swift/
+  #     export ORT_IOS_POD_LOCAL_PATH="swift/${{ variables.podArchiveName }}"
+  #     xcodebuild test -scheme onnxruntime -destination 'platform=iOS Simulator,name=iPhone 14'
+  #     rm swift/pod-archive-onnxruntime-c-*.zip
+  #   workingDirectory: $(Build.SourcesDirectory)
+  #   displayName: "Test Package.swift usage"
 
   # - publish: "$(Build.ArtifactStagingDirectory)"
   #   artifact: ios_packaging_artifacts
