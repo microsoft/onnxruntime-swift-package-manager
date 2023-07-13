@@ -19,6 +19,7 @@ jobs:
 
   variables:
     xcodeVersion: "14.3"
+    podArchiveName: ""
 
   timeoutInMinutes: 300
 
@@ -167,9 +168,10 @@ jobs:
   - script: |
       set -e -x
       ARTIFACTS_LIST=$(ls)
-      POD_ARCHIVE=$(echo "${ARTIFACTS_LIST}" | sed -n '5p')
+      POD_ARCHIVE=$(echo "${ARTIFACTS_LIST}" | sed -n '3p')
+      echo ${POD_ARCHIVE}
       echo "##vso[task.setvariable variable=POD_ARCHIVE_NAME]${POD_ARCHIVE}"
-      shasum -a 256 "${POD_ARCHIVE_NAME}"
+      shasum -a 256 "$(POD_ARCHIVE_NAME)"
     workingDirectory: '$(Build.ArtifactStagingDirectory)/ios_packaging_artifacts_full'
     displayName: "Print ORT iOS Pod checksum"
 
@@ -179,8 +181,8 @@ jobs:
   # once that's done cleanup the copy of the pod zip file
   - script: |
       set -e -x
-      cp "$(Build.ArtifactStagingDirectory)/ios_packaging_artifacts_full/${POD_ARCHIVE_NAME}" swift/
-      export ORT_IOS_POD_LOCAL_PATH="swift/${POD_ARCHIVE_NAME}"
+      cp "$(Build.ArtifactStagingDirectory)/ios_packaging_artifacts_full/$(POD_ARCHIVE_NAME)" swift/
+      export ORT_IOS_POD_LOCAL_PATH="swift/$(POD_ARCHIVE_NAME)"
       xcodebuild test -scheme onnxruntime -destination 'platform=iOS Simulator,name=iPhone 14'
       rm swift/pod-archive-onnxruntime-c-*.zip
     workingDirectory: $(Build.SourcesDirectory)
