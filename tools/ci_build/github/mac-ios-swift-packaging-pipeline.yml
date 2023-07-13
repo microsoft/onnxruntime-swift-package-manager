@@ -177,7 +177,7 @@ jobs:
         echo "${VAR_NAME}: ${VAR_VALUE}"
       }
 
-      set_var "POD_ARCHIVE_NAME" ${POD_ARCHIVE}"
+      set_var "POD_ARCHIVE_NAME" "${POD_ARCHIVE}"
 
       shasum -a 256 "${POD_ARCHIVE_NAME}"
     workingDirectory: '$(Build.ArtifactStagingDirectory)/ios_packaging_artifacts_full'
