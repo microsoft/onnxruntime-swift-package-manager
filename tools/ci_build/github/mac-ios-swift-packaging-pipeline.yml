@@ -22,7 +22,7 @@ stages:
 
     variables:
       xcodeVersion: "14.3"
-      artifactsNamne: "ios_packaging_artifacts" #TODO: Add `_full` suffix when syncing to latest main
+      artifactsName: "ios_packaging_artifacts" #TODO: Add `_full` suffix when syncing to latest main
 
     timeoutInMinutes: 300
 
