@@ -66,26 +66,22 @@ NS_ASSUME_NONNULL_BEGIN
     }
 
     std::vector<const char*> inputNames, outputNames;
-    std::vector<const OrtValue*> inputCAPIValues;
-    std::vector<OrtValue*> outputCAPIValues;
+    std::vector<const OrtValue*> inputValues;
+    std::vector<OrtValue*> outputValues;
 
-    inputNames.reserve(inputs.count);
-    inputCAPIValues.reserve(inputs.count);
     for (NSString* inputName in inputs) {
       inputNames.push_back(inputName.UTF8String);
-      inputCAPIValues.push_back(static_cast<const OrtValue*>([inputs[inputName] CXXAPIOrtValue]));
+      inputValues.push_back(static_cast<const OrtValue*>([inputs[inputName] CXXAPIOrtValue]));
     }
 
-    outputNames.reserve(outputs.count);
-    outputCAPIValues.reserve(outputs.count);
     for (NSString* outputName in outputs) {
       outputNames.push_back(outputName.UTF8String);
-      outputCAPIValues.push_back(static_cast<OrtValue*>([outputs[outputName] CXXAPIOrtValue]));
+      outputValues.push_back(static_cast<OrtValue*>([outputs[outputName] CXXAPIOrtValue]));
     }
 
     Ort::ThrowOnError(Ort::GetApi().Run(*_session, [runOptions CXXAPIOrtRunOptions],
-                                        inputNames.data(), inputCAPIValues.data(), inputNames.size(),
-                                        outputNames.data(), outputNames.size(), outputCAPIValues.data()));
+                                        inputNames.data(), inputValues.data(), inputNames.size(),
+                                        outputNames.data(), outputNames.size(), outputValues.data()));
 
     return YES;
   }
@@ -107,39 +103,30 @@ NS_ASSUME_NONNULL_BEGIN
     NSArray<NSString*>* outputNameArray = outputNameSet.allObjects;
 
     std::vector<const char*> inputNames, outputNames;
-    std::vector<const OrtValue*> inputCAPIValues;
-    std::vector<OrtValue*> outputCAPIValues;
+    std::vector<const OrtValue*> inputValues;
+    std::vector<OrtValue*> outputValues;
 
-    inputNames.reserve(inputs.count);
-    inputCAPIValues.reserve(inputs.count);
     for (NSString* inputName in inputs) {
       inputNames.push_back(inputName.UTF8String);
-      inputCAPIValues.push_back(static_cast<const OrtValue*>([inputs[inputName] CXXAPIOrtValue]));
+      inputValues.push_back(static_cast<const OrtValue*>([inputs[inputName] CXXAPIOrtValue]));
     }
 
-    outputNames.reserve(outputNameArray.count);
-    outputCAPIValues.reserve(outputNameArray.count);
     for (NSString* outputName in outputNameArray) {
       outputNames.push_back(outputName.UTF8String);
-      outputCAPIValues.push_back(nullptr);
+      outputValues.push_back(nullptr);
     }
 
     Ort::ThrowOnError(Ort::GetApi().Run(*_session, [runOptions CXXAPIOrtRunOptions],
-                                        inputNames.data(), inputCAPIValues.data(), inputNames.size(),
-                                        outputNames.data(), outputNames.size(), outputCAPIValues.data()));
+                                        inputNames.data(), inputValues.data(), inputNames.size(),
+                                        outputNames.data(), outputNames.size(), outputValues.data()));
 
     NSMutableDictionary<NSString*, ORTValue*>* outputs = [[NSMutableDictionary alloc] init];
     for (NSUInteger i = 0; i < outputNameArray.count; ++i) {
-      // Wrap the C OrtValue in a C++ Ort::Value to automatically handle its release.
-      // Then, transfer that C++ Ort::Value to a new ORTValue.
-      Ort::Value outputCXXAPIValue{outputCAPIValues[i]};
-      ORTValue* outputValue = [[ORTValue alloc] initWithCXXAPIOrtValue:std::move(outputCXXAPIValue)
-                                                    externalTensorData:nil
-                                                                 error:error];
+      ORTValue* outputValue = [[ORTValue alloc] initWithCAPIOrtValue:outputValues[i] externalTensorData:nil error:error];
       if (!outputValue) {
-        // clean up remaining C OrtValues which haven't been wrapped by a C++ Ort::Value yet
-        for (NSUInteger j = i + 1; j < outputNameArray.count; ++j) {
-          Ort::GetApi().ReleaseValue(outputCAPIValues[j]);
+        // clean up remaining C API OrtValues which haven't been wrapped by an ORTValue yet
+        for (NSUInteger j = i; j < outputNameArray.count; ++j) {
+          Ort::GetApi().ReleaseValue(outputValues[j]);
         }
         return nil;
       }
@@ -304,19 +291,6 @@ NS_ASSUME_NONNULL_BEGIN
                                  error:(NSError**)error {
   try {
     _sessionOptions->RegisterCustomOpsUsingFunction(registrationFuncName.UTF8String);
-    return YES;
-  }
-  ORT_OBJC_API_IMPL_CATCH_RETURNING_BOOL(error)
-}
-
-- (BOOL)registerCustomOpsUsingFunctionPointer:(ORTCAPIRegisterCustomOpsFnPtr)registerCustomOpsFn
-                                        error:(NSError**)error {
-  try {
-    if (!registerCustomOpsFn) {
-      ORT_CXX_API_THROW("registerCustomOpsFn must not be null", ORT_INVALID_ARGUMENT);
-    }
-    Ort::ThrowOnError((*registerCustomOpsFn)(static_cast<OrtSessionOptions*>(*_sessionOptions),
-                                             OrtGetApiBase()));
     return YES;
   }
   ORT_OBJC_API_IMPL_CATCH_RETURNING_BOOL(error)

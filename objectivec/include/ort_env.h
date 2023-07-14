@@ -16,7 +16,7 @@ extern "C" {
  *
  * Available since 1.15.
  */
-NSString* _Nullable ORTVersion(void);
+NSString* ORTVersion(void);
 
 #ifdef __cplusplus
 }
