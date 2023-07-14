@@ -96,14 +96,6 @@ stages:
 
     - script: |
         set -e -x
-        VERSION_FILE="$(Build.SourcesDirectory)/version.txt"
-        SPM_POD_VERSION="$(cat "${VERSION_FILE}")"
-        shasum -a 256 "https://onnxruntimepackages.z14.web.core.windows.net/pod-archive-onnxruntime-c-${SPM_POD_VERSION}.zip"
-      workingDirectory: "$(Build.SourcesDirectory)"
-      displayName: "Print ORT iOS Release Pod checksum"
-
-    - script: |
-        set -e -x
         xcodebuild test -scheme onnxruntime -destination 'platform=iOS Simulator,name=iPhone 14'
       workingDirectory: "$(Build.SourcesDirectory)"
       displayName: "Test Package.swift usage"
