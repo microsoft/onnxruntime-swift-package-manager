@@ -17,75 +17,12 @@ stages:
   - job: SPMIosPackaging
     displayName: "SPM iOS Packaging"
 
-  pool:
-    vmImage: "macOS-13"
-
-  variables:
-    xcodeVersion: "14.3"
-    artifactsNamne: "ios_packaging_artifacts" #TODO: Add `_full` suffix when syncing to latest main
-
-  timeoutInMinutes: 300
-
-  steps:
-  - template: templates/use-xcode-version.yml
-    parameters:
-      xcodeVersion: ${{ variables.xcodeVersion }}
-
-  # Download artifacts from a specific pipeline 
-  # For now, it consumes rel-1.15.0 version ORT iOS Pod which matches the current source code
-  - task: DownloadPipelineArtifact@2
-    inputs:
-      buildType: 'specific'
-      project: 'Lotus'
-      definition: 995
-      buildVersionToDownload: 'latestFromBranch'
-      branchName: 'rel-1.15.0'
-      targetPath: '$(Build.ArtifactStagingDirectory)'
-
-  - script: |
-      set -e -x
-      ls
-    workingDirectory: '$(Build.ArtifactStagingDirectory)/$(artifactsName)'
-    displayName: "List staged artifacts"
-
-  # copy the pod archive to a path relative to Package.swift and set the env var required by Package.swift to use that.
-  # xcodebuild will implicitly use Package.swift and build/run the .testTarget (tests in swift/onnxTests).
-  # once that's done cleanup the copy of the pod zip file
-  - script: |
-      set -e -x
-      cd "$(Build.ArtifactStagingDirectory)/$(artifactsName)"
-      ARTIFACTS_LIST=$(ls)
-      POD_ARCHIVE=$(echo "${ARTIFACTS_LIST}" | sed -n '5p')
-
-      shasum -a 256 "$(Build.ArtifactStagingDirectory)/$(artifactsName)/${POD_ARCHIVE}"
-      
-      cd "$(Build.SourcesDirectory)"
-      cp "$(Build.ArtifactStagingDirectory)/$(artifactsName)/${POD_ARCHIVE}" swift/
-      export ORT_IOS_POD_LOCAL_PATH="swift/${POD_ARCHIVE}"
-      xcodebuild test -scheme onnxruntime -destination 'platform=iOS Simulator,name=iPhone 14'
-      rm swift/pod-archive-onnxruntime-c-*.zip
-    workingDirectory: "$(Build.SourcesDirectory)"
-    displayName: "Print ORT iOS Pod checksum and test Package.swift usage"
-
-  - publish: "$(Build.ArtifactStagingDirectory)/$(artifactName)"
-    artifact: ios_packaging_artifacts
-    displayName: "Publish artifacts"
-
-  - template: templates/component-governance-component-detection-steps.yml
-    parameters :
-      condition : 'succeeded'
-
-  - stage: SPM iOS release packaging testing
-    dependsOn: []
-    jobs:
-    - job: SPMIosPackaging
-      displayName: "SPM iOS Packaging"
-
     pool:
       vmImage: "macOS-13"
 
     variables:
       xcodeVersion: "14.3"
+      artifactsNamne: "ios_packaging_artifacts" #TODO: Add `_full` suffix when syncing to latest main
 
     timeoutInMinutes: 300
 
@@ -94,20 +31,83 @@ stages:
       parameters:
         xcodeVersion: ${{ variables.xcodeVersion }}
 
-    - script: |
-        set -e -x
-        VERSION_FILE="$(Build.SourcesDirectory)/version.txt"
-        SPM_POD_VERSION="$(cat "${VERSION_FILE}")"
-        shasum -a 256 "https://onnxruntimepackages.z14.web.core.windows.net/pod-archive-onnxruntime-c-${SPM_POD_VERSION}.zip"
-      workingDirectory: "$(Build.SourcesDirectory)"
-      displayName: "Print ORT iOS Release Pod checksum"
+    # Download artifacts from a specific pipeline 
+    # For now, it consumes rel-1.15.0 version ORT iOS Pod which matches the current source code
+    - task: DownloadPipelineArtifact@2
+      inputs:
+        buildType: 'specific'
+        project: 'Lotus'
+        definition: 995
+        buildVersionToDownload: 'latestFromBranch'
+        branchName: 'rel-1.15.0'
+        targetPath: '$(Build.ArtifactStagingDirectory)'
 
     - script: |
         set -e -x
+        ls
+      workingDirectory: '$(Build.ArtifactStagingDirectory)/$(artifactsName)'
+      displayName: "List staged artifacts"
+
+    # copy the pod archive to a path relative to Package.swift and set the env var required by Package.swift to use that.
+    # xcodebuild will implicitly use Package.swift and build/run the .testTarget (tests in swift/onnxTests).
+    # once that's done cleanup the copy of the pod zip file
+    - script: |
+        set -e -x
+        cd "$(Build.ArtifactStagingDirectory)/$(artifactsName)"
+        ARTIFACTS_LIST=$(ls)
+        POD_ARCHIVE=$(echo "${ARTIFACTS_LIST}" | sed -n '5p')
+
+        shasum -a 256 "$(Build.ArtifactStagingDirectory)/$(artifactsName)/${POD_ARCHIVE}"
+        
+        cd "$(Build.SourcesDirectory)"
+        cp "$(Build.ArtifactStagingDirectory)/$(artifactsName)/${POD_ARCHIVE}" swift/
+        export ORT_IOS_POD_LOCAL_PATH="swift/${POD_ARCHIVE}"
         xcodebuild test -scheme onnxruntime -destination 'platform=iOS Simulator,name=iPhone 14'
+        rm swift/pod-archive-onnxruntime-c-*.zip
       workingDirectory: "$(Build.SourcesDirectory)"
-      displayName: "Test Package.swift usage"
+      displayName: "Print ORT iOS Pod checksum and test Package.swift usage"
+
+    - publish: "$(Build.ArtifactStagingDirectory)/$(artifactName)"
+      artifact: ios_packaging_artifacts
+      displayName: "Publish artifacts"
 
     - template: templates/component-governance-component-detection-steps.yml
       parameters :
         condition : 'succeeded'
+
+  - stage: SPM iOS release packaging testing
+    dependsOn: []
+    jobs:
+    - job: SPMIosPackaging
+      displayName: "SPM iOS Packaging"
+
+      pool:
+        vmImage: "macOS-13"
+
+      variables:
+        xcodeVersion: "14.3"
+
+      timeoutInMinutes: 300
+
+      steps:
+      - template: templates/use-xcode-version.yml
+        parameters:
+          xcodeVersion: ${{ variables.xcodeVersion }}
+
+      - script: |
+          set -e -x
+          VERSION_FILE="$(Build.SourcesDirectory)/version.txt"
+          SPM_POD_VERSION="$(cat "${VERSION_FILE}")"
+          shasum -a 256 "https://onnxruntimepackages.z14.web.core.windows.net/pod-archive-onnxruntime-c-${SPM_POD_VERSION}.zip"
+        workingDirectory: "$(Build.SourcesDirectory)"
+        displayName: "Print ORT iOS Release Pod checksum"
+
+      - script: |
+          set -e -x
+          xcodebuild test -scheme onnxruntime -destination 'platform=iOS Simulator,name=iPhone 14'
+        workingDirectory: "$(Build.SourcesDirectory)"
+        displayName: "Test Package.swift usage"
+
+      - template: templates/component-governance-component-detection-steps.yml
+        parameters :
+          condition : 'succeeded'
