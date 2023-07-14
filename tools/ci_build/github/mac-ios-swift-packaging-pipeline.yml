@@ -11,11 +11,11 @@ parameters:
 name: "$(Date:yyyyMMdd)$(Rev:rrr)"  # build number format
 
 stages:
-- stage: SPM iOS local packaging testing
+- stage: SPM_IOS_Local_Packaging_Testing
   dependsOn: []
   jobs:
   - job: SPMIosPackaging
-    displayName: "SPM iOS Packaging"
+    displayName: "SPM iOS Packaging Local"
 
     pool:
       vmImage: "macOS-13"
@@ -75,11 +75,11 @@ stages:
       parameters :
         condition : 'succeeded'
 
-- stage: SPM iOS release packaging testing
+- stage: SPM_IOS_Release_Packaging_Testing
   dependsOn: []
   jobs:
   - job: SPMIosPackaging
-    displayName: "SPM iOS Packaging"
+    displayName: "SPM iOS Packaging Release"
 
     pool:
       vmImage: "macOS-13"
