@@ -38,7 +38,7 @@ stages:
         buildType: 'specific'
         project: 'Lotus'
         definition: 995
-        buildVersionToDownload: 'latestFromBranch'
+        buildVersionToDownload: 'latest'
         branchName: 'rel-1.15.0'
         targetPath: '$(Build.ArtifactStagingDirectory)'
 
@@ -93,6 +93,14 @@ stages:
     - template: templates/use-xcode-version.yml
       parameters:
         xcodeVersion: ${{ variables.xcodeVersion }}
+
+    # - script: |
+    #     set -e -x
+    #     VERSION_FILE="$(Build.SourcesDirectory)/version.txt"
+    #     SPM_POD_VERSION="$(cat "${VERSION_FILE}")"
+    #     shasum -a 256 "https://onnxruntimepackages.z14.web.core.windows.net/pod-archive-onnxruntime-c-${SPM_POD_VERSION}.zip"
+    #   workingDirectory: "$(Build.SourcesDirectory)"
+    #   displayName: "Print ORT iOS Release Pod checksum"
 
     - script: |
         set -e -x
