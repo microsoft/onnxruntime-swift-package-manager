@@ -65,9 +65,9 @@ stages:
         xcodebuild test -scheme onnxruntime -destination 'platform=iOS Simulator,name=iPhone 14'
         rm swift/pod-archive-onnxruntime-c-*.zip
       workingDirectory: "$(Build.SourcesDirectory)"
-      displayName: "Print ORT iOS Pod checksum and test Package.swift usage"
+      displayName: "Print ORT iOS Pod checksum and Test Package.swift usage"
 
-    - publish: "$(Build.ArtifactStagingDirectory)/$(artifactName)"
+    - publish: "$(Build.ArtifactStagingDirectory)/$(artifactsName)"
       artifact: ios_packaging_artifacts
       displayName: "Publish artifacts"
 
@@ -94,13 +94,17 @@ stages:
       parameters:
         xcodeVersion: ${{ variables.xcodeVersion }}
 
-    # - script: |
-    #     set -e -x
-    #     VERSION_FILE="$(Build.SourcesDirectory)/version.txt"
-    #     SPM_POD_VERSION="$(cat "${VERSION_FILE}")"
-    #     shasum -a 256 "https://onnxruntimepackages.z14.web.core.windows.net/pod-archive-onnxruntime-c-${SPM_POD_VERSION}.zip"
-    #   workingDirectory: "$(Build.SourcesDirectory)"
-    #   displayName: "Print ORT iOS Release Pod checksum"
+    - script: |
+        set -e -x
+        VERSION_FILE="$(Build.SourcesDirectory)/version.txt"
+        SPM_POD_VERSION="$(cat "${VERSION_FILE}")"
+
+        POD_ARCHIVE_URL="https://onnxruntimepackages.z14.web.core.windows.net/pod-archive-onnxruntime-c-${SPM_POD_VERSION}.zip"
+
+        curl -o pod-archive-onnxruntime-c-${SPM_POD_VERSION}.zip ${POD_ARCHIVE_URL}
+        shasum -a 256 "pod-archive-onnxruntime-c-${SPM_POD_VERSION}.zip"
+      workingDirectory: "$(Build.SourcesDirectory)"
+      displayName: "Print ORT iOS Release Pod checksum"
 
     - script: |
         set -e -x
