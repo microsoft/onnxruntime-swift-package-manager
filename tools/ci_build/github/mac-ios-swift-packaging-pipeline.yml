@@ -75,39 +75,39 @@ stages:
       parameters :
         condition : 'succeeded'
 
-  - stage: SPM iOS release packaging testing
-    dependsOn: []
-    jobs:
-    - job: SPMIosPackaging
-      displayName: "SPM iOS Packaging"
+- stage: SPM iOS release packaging testing
+  dependsOn: []
+  jobs:
+  - job: SPMIosPackaging
+    displayName: "SPM iOS Packaging"
 
-      pool:
-        vmImage: "macOS-13"
+    pool:
+      vmImage: "macOS-13"
 
-      variables:
-        xcodeVersion: "14.3"
+    variables:
+      xcodeVersion: "14.3"
 
-      timeoutInMinutes: 300
+    timeoutInMinutes: 300
 
-      steps:
-      - template: templates/use-xcode-version.yml
-        parameters:
-          xcodeVersion: ${{ variables.xcodeVersion }}
+    steps:
+    - template: templates/use-xcode-version.yml
+      parameters:
+        xcodeVersion: ${{ variables.xcodeVersion }}
 
-      - script: |
-          set -e -x
-          VERSION_FILE="$(Build.SourcesDirectory)/version.txt"
-          SPM_POD_VERSION="$(cat "${VERSION_FILE}")"
-          shasum -a 256 "https://onnxruntimepackages.z14.web.core.windows.net/pod-archive-onnxruntime-c-${SPM_POD_VERSION}.zip"
-        workingDirectory: "$(Build.SourcesDirectory)"
-        displayName: "Print ORT iOS Release Pod checksum"
+    - script: |
+        set -e -x
+        VERSION_FILE="$(Build.SourcesDirectory)/version.txt"
+        SPM_POD_VERSION="$(cat "${VERSION_FILE}")"
+        shasum -a 256 "https://onnxruntimepackages.z14.web.core.windows.net/pod-archive-onnxruntime-c-${SPM_POD_VERSION}.zip"
+      workingDirectory: "$(Build.SourcesDirectory)"
+      displayName: "Print ORT iOS Release Pod checksum"
 
-      - script: |
-          set -e -x
-          xcodebuild test -scheme onnxruntime -destination 'platform=iOS Simulator,name=iPhone 14'
-        workingDirectory: "$(Build.SourcesDirectory)"
-        displayName: "Test Package.swift usage"
+    - script: |
+        set -e -x
+        xcodebuild test -scheme onnxruntime -destination 'platform=iOS Simulator,name=iPhone 14'
+      workingDirectory: "$(Build.SourcesDirectory)"
+      displayName: "Test Package.swift usage"
 
-      - template: templates/component-governance-component-detection-steps.yml
-        parameters :
-          condition : 'succeeded'
+    - template: templates/component-governance-component-detection-steps.yml
+      parameters :
+        condition : 'succeeded'
