@@ -26,6 +26,9 @@ let package = Package(
         .library(name: "onnxruntime",
                  type: .static,
                  targets: ["OnnxRuntimeBindings"]),
+        .library(name: "onnxruntime_extensions",
+                 type: .static,
+                 targets: ["OnnxRuntimeExtensions"]),
     ],
     dependencies: [],
     targets: [
@@ -46,6 +49,15 @@ let package = Package(
                     path: "swift/OnnxRuntimeBindingsTests",
                     resources: [
                         .copy("Resources/single_add.basic.ort")
+                    ]),
+        .target(name: "OnnxRuntimeExtensions",
+                dependencies: ["onnxruntime_extensions"],
+                path: "extensions"),
+        .testTarget(name: "OnnxRuntimeExtensionsTests",
+                    dependencies: ["OnnxRuntimeExtensions"],
+                    path: "swift/OnnxRuntimeExtensionsTests",
+                    resources: [
+                        .copy("") // TODO: add the test model here
                     ]),
     ]
 )
@@ -84,5 +96,16 @@ if let pod_archive_path = ProcessInfo.processInfo.environment["ORT_IOS_POD_LOCAL
        Target.binaryTarget(name: "onnxruntime",
                            url: "https://onnxruntimepackages.z14.web.core.windows.net/pod-archive-onnxruntime-c-1.15.0.zip",
                            checksum: "9b41412329a73d7d298b1d94ab40ae9adb65cb84f132054073bc82515b4f5f82")
+    )
+}
+
+if let ext_pod_archive_path = ProcessInfo.processInfo.environment["ORT_EXT_IOS_POD_LOCAL_PATH"] {
+    package.targets.append(Target.binaryTarget(name: "onnxruntime_extensions", path: ext_pod_archive_path))
+} else {
+    // ORT Extensions 0.8.0 release
+    package.targets.append(
+       Target.binaryTarget(name: "onnxruntime_extensions",
+                           url: "https://onnxruntimepackages.z14.web.core.windows.net/pod-archive-onnxruntime-extensions-c-0.8.0.zip",
+                           checksum: "1d003770c9a6d0ead92c04ed40d5083e8f4f55ea985750c3efab91489be15512")
     )
 }
