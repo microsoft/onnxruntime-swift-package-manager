@@ -1,21 +1,9 @@
-parameters:
-- name: BuildType
-  displayName: |-
-    Type of build.
-    "normal": A normal build not for publication.
-  type: string      #TODO: add other build types here
-  values:
-  - normal
-  default: normal
-
-name: "$(Date:yyyyMMdd)$(Rev:rrr)"  # build number format
-
 stages:
-- stage: SPM_IOS_Local_Packaging_Testing
+- stage: SPM_IOS_Local_Pod_Testing
   dependsOn: []
   jobs:
-  - job: SPMIosPackaging
-    displayName: "SPM iOS Packaging Local"
+  - job: j
+    displayName: "Test with latest local ORT native pod"
 
     pool:
       vmImage: "macOS-13"
@@ -24,7 +12,7 @@ stages:
       xcodeVersion: "14.3"
       artifactsName: "ios_packaging_artifacts" #TODO: Add `_full` suffix when syncing to latest main
 
-    timeoutInMinutes: 300
+    timeoutInMinutes: 60
 
     steps:
     - template: templates/use-xcode-version.yml
@@ -33,11 +21,12 @@ stages:
 
     # Download artifacts from a specific pipeline 
     # For now, it consumes rel-1.15.0 version ORT iOS Pod which matches the current source code
+    # TODO: Update branch to latest main of ORT github repo when syncing changes to ORT SPM repo here.
     - task: DownloadPipelineArtifact@2
       inputs:
         buildType: 'specific'
         project: 'Lotus'
-        definition: 995
+        definition: 995          #'definitionid' is obtained from `System.DefinitionId` of ORT CI: onnxruntime-ios-packaging-pipeline
         buildVersionToDownload: 'latest'
         branchName: 'rel-1.15.0'
         targetPath: '$(Build.ArtifactStagingDirectory)'
@@ -67,19 +56,15 @@ stages:
       workingDirectory: "$(Build.SourcesDirectory)"
       displayName: "Print ORT iOS Pod checksum and Test Package.swift usage"
 
-    - publish: "$(Build.ArtifactStagingDirectory)/$(artifactsName)"
-      artifact: ios_packaging_artifacts
-      displayName: "Publish artifacts"
-
     - template: templates/component-governance-component-detection-steps.yml
       parameters :
         condition : 'succeeded'
 
-- stage: SPM_IOS_Release_Packaging_Testing
+- stage: SPM_IOS_Release_Pod_Testing
   dependsOn: []
   jobs:
-  - job: SPMIosPackaging
-    displayName: "SPM iOS Packaging Release"
+  - job: j
+    displayName: "Test with released ORT native pod"
 
     pool:
       vmImage: "macOS-13"
@@ -87,24 +72,12 @@ stages:
     variables:
       xcodeVersion: "14.3"
 
-    timeoutInMinutes: 300
+    timeoutInMinutes: 60
 
     steps:
     - template: templates/use-xcode-version.yml
       parameters:
         xcodeVersion: ${{ variables.xcodeVersion }}
-
-    - script: |
-        set -e -x
-        VERSION_FILE="$(Build.SourcesDirectory)/version.txt"
-        SPM_POD_VERSION="$(cat "${VERSION_FILE}")"
-
-        POD_ARCHIVE_URL="https://onnxruntimepackages.z14.web.core.windows.net/pod-archive-onnxruntime-c-${SPM_POD_VERSION}.zip"
-
-        curl -o pod-archive-onnxruntime-c-${SPM_POD_VERSION}.zip ${POD_ARCHIVE_URL}
-        shasum -a 256 "pod-archive-onnxruntime-c-${SPM_POD_VERSION}.zip"
-      workingDirectory: "$(Build.SourcesDirectory)"
-      displayName: "Print ORT iOS Release Pod checksum"
 
     - script: |
         set -e -x

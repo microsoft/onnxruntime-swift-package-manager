@@ -1,6 +1,6 @@
-# ONNXRuntime Swift Package Manager
+# Swift Package Manager for ONNX Runtime
 
-A light-weight [ONNXRuntime](https://github.com/microsoft/onnxruntime) repository for hosting [Swift Package Manager(SPM)](https://www.swift.org/package-manager/) support.
+A light-weight repository for providing [Swift Package Manager (SPM)](https://www.swift.org/package-manager/) support for [ONNXRuntime](https://github.com/microsoft/onnxruntime). The ONNX Runtime native package is included as a binary dependency of the SPM package.
 
 
 SPM is the alternative to CocoaPods when desired platform to consume is mobile iOS.
