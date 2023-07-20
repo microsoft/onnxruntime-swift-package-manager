@@ -31,7 +31,7 @@ let package = Package(
         .target(name: "OnnxRuntimeBindings",
                 dependencies: ["onnxruntime"],
                 path: "objectivec",
-                exclude: ["test", "docs", "ReadMe.md", "format_objc.sh"],
+                exclude: ["ReadMe.md", "format_objc.sh"],
                 cxxSettings: [
                     .define("SPM_BUILD"),
                     .unsafeFlags(["-std=c++17",
