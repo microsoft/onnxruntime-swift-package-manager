@@ -43,8 +43,7 @@ stages:
     - script: |
         set -e -x
         cd "$(Build.ArtifactStagingDirectory)/$(artifactsName)"
-        ARTIFACTS_LIST=$(ls)
-        POD_ARCHIVE=$(echo "${ARTIFACTS_LIST}" | sed -n '5p')
+        POD_ARCHIVE=$(find . -name "pod-archive-onnxruntime-c*.zip")
 
         shasum -a 256 "$(Build.ArtifactStagingDirectory)/$(artifactsName)/${POD_ARCHIVE}"
         

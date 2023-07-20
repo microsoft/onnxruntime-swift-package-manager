@@ -5,6 +5,10 @@ A light-weight repository for providing [Swift Package Manager (SPM)](https://ww
 
 SPM is the alternative to CocoaPods when desired platform to consume is mobile iOS.
 
+## Note
+
+The `objectivec/` and `swift/` directories are copied from ORT repo and it's expected to match. It will be updated periodically/before release to merge the newly checked-in changes for objective-c/swift on ORT main repo.
+
 ## Contributing
 
 This project welcomes contributions and suggestions.  Most contributions require you to agree to a
