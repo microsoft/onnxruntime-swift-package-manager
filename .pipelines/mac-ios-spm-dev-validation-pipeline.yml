@@ -54,12 +54,12 @@
 
         shasum -a 256 "$(Build.ArtifactStagingDirectory)/$(artifactsName)/${POD_ARCHIVE}"
         
-        cd "$(Build.SourcesDirectory)"/tmp
+        cd "$(Build.SourcesDirectory)/tmp"
         cp "$(Build.ArtifactStagingDirectory)/$(artifactsName)/${POD_ARCHIVE}" swift/
         export ORT_IOS_POD_LOCAL_PATH="swift/${POD_ARCHIVE}"
         xcodebuild test -scheme onnxruntime -destination 'platform=iOS Simulator,name=iPhone 14'
         rm swift/pod-archive-onnxruntime-c-*.zip
-      workingDirectory: "$(Build.SourcesDirectory)"/tmp
+      workingDirectory: "$(Build.SourcesDirectory)/tmp"
       displayName: "Print ORT iOS Pod checksum and Test Package.swift usage"
 
     - script: |
