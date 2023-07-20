@@ -1,6 +1,3 @@
-stages:
-- stage: SPM_IOS_Local_Pod_Testing
-  dependsOn: []
   jobs:
   - job: j
     displayName: "Test with latest local ORT native pod"
@@ -10,7 +7,7 @@ stages:
 
     variables:
       xcodeVersion: "14.3"
-      artifactsName: "ios_packaging_artifacts" #TODO: Add `_full` suffix when syncing to latest main
+      artifactsName: "ios_packaging_artifacts_full"
 
     timeoutInMinutes: 60
 
@@ -18,6 +15,16 @@ stages:
     - template: templates/use-xcode-version.yml
       parameters:
         xcodeVersion: ${{ variables.xcodeVersion }}
+
+    - script: |
+        mkdir tmp
+        cd tmp
+        git clone -n --depth=1 --filter=tree:0 https://github.com/microsoft/onnxruntime.git
+        cd onnxruntime
+        git sparse-checkout set --no-cone objectivec swift Package.swift
+        git checkout
+      workingDirectory: "$(Build.SourcesDirectory)"
+      displayName: "Sparse checkout objectivec/ swift/ folders from latest ORT main repository"
 
     # Download artifacts from a specific pipeline 
     # For now, it consumes rel-1.15.0 version ORT iOS Pod which matches the current source code
@@ -28,7 +35,7 @@ stages:
         project: 'Lotus'
         definition: 995          #'definitionid' is obtained from `System.DefinitionId` of ORT CI: onnxruntime-ios-packaging-pipeline
         buildVersionToDownload: 'latest'
-        branchName: 'rel-1.15.0'
+        branchName: 'main'
         targetPath: '$(Build.ArtifactStagingDirectory)'
 
     - script: |
@@ -47,42 +54,18 @@ stages:
 
         shasum -a 256 "$(Build.ArtifactStagingDirectory)/$(artifactsName)/${POD_ARCHIVE}"
         
-        cd "$(Build.SourcesDirectory)"
+        cd "$(Build.SourcesDirectory)"/tmp
         cp "$(Build.ArtifactStagingDirectory)/$(artifactsName)/${POD_ARCHIVE}" swift/
         export ORT_IOS_POD_LOCAL_PATH="swift/${POD_ARCHIVE}"
         xcodebuild test -scheme onnxruntime -destination 'platform=iOS Simulator,name=iPhone 14'
         rm swift/pod-archive-onnxruntime-c-*.zip
-      workingDirectory: "$(Build.SourcesDirectory)"
+      workingDirectory: "$(Build.SourcesDirectory)"/tmp
       displayName: "Print ORT iOS Pod checksum and Test Package.swift usage"
 
-    - template: templates/component-governance-component-detection-steps.yml
-      parameters :
-        condition : 'succeeded'
-
-- stage: SPM_IOS_Release_Pod_Testing
-  dependsOn: []
-  jobs:
-  - job: j
-    displayName: "Test with released ORT native pod"
-
-    pool:
-      vmImage: "macOS-13"
-
-    variables:
-      xcodeVersion: "14.3"
-
-    timeoutInMinutes: 60
-
-    steps:
-    - template: templates/use-xcode-version.yml
-      parameters:
-        xcodeVersion: ${{ variables.xcodeVersion }}
-
     - script: |
-        set -e -x
-        xcodebuild test -scheme onnxruntime -destination 'platform=iOS Simulator,name=iPhone 14'
+        rm -rf tmp/.
       workingDirectory: "$(Build.SourcesDirectory)"
-      displayName: "Test Package.swift usage"
+      displayName: "Sparse checkout objectivec/ swift/ folders from latest ORT main repository"
 
     - template: templates/component-governance-component-detection-steps.yml
       parameters :
