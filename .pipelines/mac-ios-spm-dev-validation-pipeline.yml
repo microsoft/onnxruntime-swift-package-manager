@@ -25,7 +25,12 @@
         git checkout
       workingDirectory: "$(Build.SourcesDirectory)"
       displayName: "Sparse checkout objectivec/ swift/ folders from latest ORT main repository"
-
+    
+     - script: |
+        ls -R  "$(Build.SourcesDirectory)/tmp/onnxruntime"
+      workingDirectory: "$(Build.SourcesDirectory)/tmp"
+      displayName: "List sparse checkout repo contents"
+    
     # Download artifacts from a specific pipeline 
     # For now, it consumes rel-1.15.0 version ORT iOS Pod which matches the current source code
     # TODO: Update branch to latest main of ORT github repo when syncing changes to ORT SPM repo here.
@@ -54,7 +59,7 @@
 
         shasum -a 256 "$(Build.ArtifactStagingDirectory)/$(artifactsName)/${POD_ARCHIVE}"
         
-        cd "$(Build.SourcesDirectory)/tmp"
+        cd "$(Build.SourcesDirectory)/tmp/onnxruntime"
         cp "$(Build.ArtifactStagingDirectory)/$(artifactsName)/${POD_ARCHIVE}" swift/
         export ORT_IOS_POD_LOCAL_PATH="swift/${POD_ARCHIVE}"
         xcodebuild test -scheme onnxruntime -destination 'platform=iOS Simulator,name=iPhone 14'
