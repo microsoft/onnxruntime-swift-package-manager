@@ -51,13 +51,21 @@ let package = Package(
                         .copy("Resources/single_add.basic.ort")
                     ]),
         .target(name: "OnnxRuntimeExtensions",
-                dependencies: ["onnxruntime_extensions"],
-                path: "extensions"),
+                dependencies: ["onnxruntime_extensions","onnxruntime"],
+                path: "extensions",
+                cxxSettings: [
+                    .define("SPM_BUILD"),
+                    .unsafeFlags(["-std=c++17",
+                                  "-fobjc-arc-exceptions"
+                                 ]),
+                ], linkerSettings: [
+                    .unsafeFlags(["-ObjC"]),
+                ]),
         .testTarget(name: "OnnxRuntimeExtensionsTests",
-                    dependencies: ["OnnxRuntimeExtensions"],
+                    dependencies: ["OnnxRuntimeExtensions", "OnnxRuntimeBindings"],
                     path: "swift/OnnxRuntimeExtensionsTests",
                     resources: [
-                        .copy("") // TODO: add the test model here
+                        .copy("Resources/decode_image.onnx")
                     ]),
     ]
 )
