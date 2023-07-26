@@ -23,7 +23,7 @@
         cd tmp
         git clone -n --depth=1 --filter=tree:0 https://github.com/microsoft/onnxruntime.git
         cd onnxruntime
-        git sparse-checkout set --no-cone objectivec swift Package.swift
+        git sparse-checkout set --no-cone objectivec
         git checkout
       workingDirectory: "$(Build.SourcesDirectory)"
       displayName: "Sparse checkout objectivec/ swift/ folders from latest ORT main repository"
