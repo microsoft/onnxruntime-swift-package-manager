@@ -50,7 +50,7 @@ let package = Package(
                         .copy("Resources/single_add.basic.ort")
                     ]),
         .target(name: "OnnxRuntimeExtensions",
-                dependencies: ["onnxruntime_extensions","onnxruntime"],
+                dependencies: ["onnxruntime_extensions", "onnxruntime"],
                 path: "extensions",
                 cxxSettings: [
                     .define("SPM_BUILD"),
