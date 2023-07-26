@@ -1,9 +1,13 @@
-# ONNXRuntime Swift Package Manager
+# Swift Package Manager for ONNX Runtime
 
-A light-weight [ONNXRuntime](https://github.com/microsoft/onnxruntime) repository for hosting [Swift Package Manager(SPM)](https://www.swift.org/package-manager/) support.
+A light-weight repository for providing [Swift Package Manager (SPM)](https://www.swift.org/package-manager/) support for [ONNXRuntime](https://github.com/microsoft/onnxruntime). The ONNX Runtime native package is included as a binary dependency of the SPM package.
 
 
 SPM is the alternative to CocoaPods when desired platform to consume is mobile iOS.
+
+## Note
+
+The `objectivec/` and `swift/` directories are copied from ORT repo and it's expected to match. It will be updated periodically/before release to merge the newly checked-in changes for objective-c/swift on ORT main repo.
 
 ## Contributing
 

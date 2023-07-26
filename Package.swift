@@ -9,12 +9,11 @@
 // For context, the end user's config will look something like:
 //
 //     dependencies: [
-//       .package(url: "https://github.com/microsoft/onnxruntime", branch: "rel-1.15.0"),
+//        #TODO: update to use release 'version' and the new repo url here when available
+//       .package(url: "https://github.com/microsoft/onnxruntime", branch: "rel-1.15.0"), 
 //       ...
 //     ],
 //
-// NOTE: The direct consumption creates a somewhat complicated setup to 'release' a new version of the ORT SPM package.
-//       TBD: how to manage the release process
 
 import PackageDescription
 import class Foundation.ProcessInfo
@@ -35,7 +34,7 @@ let package = Package(
         .target(name: "OnnxRuntimeBindings",
                 dependencies: ["onnxruntime"],
                 path: "objectivec",
-                exclude: ["test", "docs", "ReadMe.md", "format_objc.sh"],
+                exclude: ["ReadMe.md", "format_objc.sh"],
                 cxxSettings: [
                     .define("SPM_BUILD"),
                     .unsafeFlags(["-std=c++17",
@@ -74,12 +73,11 @@ let package = Package(
 //
 // There are 2 scenarios:
 //
-// Release branch of ORT github repo:
-//    Target will be set to the released pod archive and its checksum.
+// Release version of ORT SPM github repo:
+//    Target will be set to the latest released ORT iOS pod archive and its checksum.
 //
-// Any other branch/tag of ORT github repo:
-//    Invalid by default. We do not have a pod archive that is guaranteed to work
-//    as the objective-c bindings may have changed since the pod archive was released.
+// Current main of ORT SPM github repo:
+//    Target will be set to the pod archive built in sync with the current main objective-c source code.
 
 // CI or local testing where you have built/obtained the iOS Pod archive matching the current source code.
 // Requires the ORT_IOS_POD_LOCAL_PATH environment variable to be set to specify the location of the pod.
