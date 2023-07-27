@@ -78,6 +78,7 @@
         shasum -a 256 "$(Build.ArtifactStagingDirectory)/$(artifactsNameForExt)/${POD_ARCHIVE_EXT}"
 
         cd "$(Build.SourcesDirectory)/tmp/onnxruntime"
+        
         cp "$(Build.SourcesDirectory)/Package.swift" .
         cp -r "$(Build.SourcesDirectory)/swift" .
         cp -r "$(Build.SourcesDirectory)/extensions" .
@@ -91,7 +92,7 @@
 
         xcodebuild test -scheme onnxruntime_extensions -destination 'platform=iOS Simulator,name=iPhone 14'
 
-      workingDirectory: "$(Build.SourcesDirectory)/tmp"
+      workingDirectory: "$(Build.SourcesDirectory)/tmp/onnxruntime"
       displayName: "Print ORT iOS Pod checksum and Test Package.swift usage including extensions"
 
     - template: templates/component-governance-component-detection-steps.yml
