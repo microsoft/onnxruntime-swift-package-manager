@@ -21,7 +21,7 @@
         cd tmp
         git clone -n --depth=1 --filter=tree:0 https://github.com/microsoft/onnxruntime.git
         cd onnxruntime
-        git sparse-checkout set --no-cone objectivec swift Package.swift
+        git sparse-checkout set --no-cone objectivec
         git checkout
       workingDirectory: "$(Build.SourcesDirectory)"
       displayName: "Sparse checkout objectivec/ swift/ folders from latest ORT main repository"
@@ -47,8 +47,8 @@
       workingDirectory: '$(Build.ArtifactStagingDirectory)/$(artifactsName)'
       displayName: "List staged artifacts"
     
-     # Download artifacts from extensions ios packaging pipeline for ort-extensions-c pod
-     - task: DownloadPipelineArtifact@2
+    # Download artifacts from extensions ios packaging pipeline for ort-extensions-c pod
+    - task: DownloadPipelineArtifact@2
       inputs:
         buildType: 'specific'
         project: 'Lotus'
@@ -74,11 +74,23 @@
 
         shasum -a 256 "$(Build.ArtifactStagingDirectory)/$(artifactsName)/${POD_ARCHIVE}"
         
+        cd "$(Build.ArtifactStagingDirectory)/ios_packaging_artifacts"
+        POD_ARCHIVE_EXT=$(find . -name "pod-archive-onnxruntime-extensions-c-*.zip")
+
+        shasum -a 256 "$(Build.ArtifactStagingDirectory)/ios_packaging_artifacts/${POD_ARCHIVE_EXT}"
+        
         cd "$(Build.SourcesDirectory)/tmp/onnxruntime"
+        cp -r "$(Build.SourcesDirectory/swift" .
+        cp  "$(Build.SourcesDirectory/Package.swift" .
         cp "$(Build.ArtifactStagingDirectory)/$(artifactsName)/${POD_ARCHIVE}" swift/
         export ORT_IOS_POD_LOCAL_PATH="swift/${POD_ARCHIVE}"
-        xcodebuild test -scheme onnxruntime -destination 'platform=iOS Simulator,name=iPhone 14'
+        cp "$(Build.ArtifactStagingDirectory)/ios_packaging_artifacts/${POD_ARCHIVE_EXT}" swift/
+        export ORT_EXT_IOS_POD_LOCAL_PATH="swift/${POD_ARCHIVE_EXT}"
+
+        xcodebuild test -scheme onnxruntime-Package -destination 'platform=iOS Simulator,name=iPhone 14'
+        
         rm swift/pod-archive-onnxruntime-c-*.zip
+        rm swift/pod-archive-onnxruntime-extensions-c-*.zip
       workingDirectory: "$(Build.SourcesDirectory)/tmp"
       displayName: "Print ORT iOS Pod checksum and Test Package.swift usage"
 
