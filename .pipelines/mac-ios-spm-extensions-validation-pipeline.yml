@@ -1,6 +1,6 @@
   jobs:
   - job: j
-    displayName: "Test with ORT Extensionsnative pod"
+    displayName: "Test with ORT Extensions native pod"
 
     pool:
       vmImage: "macOS-13"
