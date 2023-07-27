@@ -39,9 +39,10 @@
 
         shasum -a 256 "$(Build.ArtifactStagingDirectory)/ios_packaging_artifacts/${POD_ARCHIVE}"
         
+        cd "$(Build.SourcesDirectory)"
         cp "$(Build.ArtifactStagingDirectory)/ios_packaging_artifacts/${POD_ARCHIVE}" swift/
         export ORT_EXT_IOS_POD_LOCAL_PATH="swift/${POD_ARCHIVE}"
-        
+
         xcodebuild test -scheme onnxruntime -destination 'platform=iOS Simulator,name=iPhone 14'
       workingDirectory: "$(Build.SourcesDirectory)"
       displayName: "Test Package.swift usage"
