@@ -21,6 +21,7 @@
         buildType: 'specific'
         project: 'Lotus'
         definition: 1206          #'definitionid' is obtained from `System.DefinitionId` of extensions CI: extensions.ios_packaging
+        specificBuildWithTriggering: true
         buildVersionToDownload: 'latestFromBranch'
         branchName: 'yguo/change-header-path'   # TODO: update branch name here
         targetPath: '$(Build.ArtifactStagingDirectory)'
