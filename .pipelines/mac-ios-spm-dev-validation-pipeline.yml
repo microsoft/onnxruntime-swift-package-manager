@@ -8,7 +8,6 @@
     variables:
       xcodeVersion: "14.3"
       artifactsName: "ios_packaging_artifacts_full"
-      artifactsNameForExt:  "ios_packaging_artifacts"
 
     timeoutInMinutes: 60
 
@@ -22,10 +21,10 @@
         cd tmp
         git clone -n --depth=1 --filter=tree:0 https://github.com/microsoft/onnxruntime.git
         cd onnxruntime
-        git sparse-checkout set --no-cone objectivec
+        git sparse-checkout set --no-cone objectivec swift Package.swift
         git checkout
       workingDirectory: "$(Build.SourcesDirectory)"
-      displayName: "Sparse checkout objectivec/ folders from latest ORT main repository"
+      displayName: "Sparse checkout objectivec/ swift/ folders from latest ORT main repository"
     
     - script: |
         ls -R  "$(Build.SourcesDirectory)/tmp/onnxruntime"
@@ -33,6 +32,8 @@
       displayName: "List sparse checkout repo contents"
     
     # Download artifacts from a specific pipeline 
+    # For now, it consumes rel-1.15.0 version ORT iOS Pod which matches the current source code
+    # TODO: Update branch to latest main of ORT github repo when syncing changes to ORT SPM repo here.
     - task: DownloadPipelineArtifact@2
       inputs:
         buildType: 'specific'
@@ -46,22 +47,7 @@
         set -e -x
         ls
       workingDirectory: '$(Build.ArtifactStagingDirectory)/$(artifactsName)'
-      displayName: "List staged artifacts for ORT C"
-
-    - task: DownloadPipelineArtifact@2
-      inputs:
-        buildType: 'specific'
-        project: 'Lotus'
-        definition: 1206          #'definitionid' is obtained from `System.DefinitionId` of extensions CI: extensions.ios_packaging
-        buildVersionToDownload: 'latest'
-        branchName: 'yguo/change-header-path'   # TODO: update branch name here
-        targetPath: '$(Build.ArtifactStagingDirectory)'
-
-    - script: |
-        set -e -x
-        ls
-      workingDirectory: '$(Build.ArtifactStagingDirectory)/ios_packaging_artifacts'
-      displayName: "List staged artifacts for ORT Ext C Pod"
+      displayName: "List staged artifacts"
 
     # copy the pod archive to a path relative to Package.swift and set the env var required by Package.swift to use that.
     # xcodebuild will implicitly use Package.swift and build/run the .testTarget (tests in swift/onnxTests).
@@ -70,30 +56,16 @@
         set -e -x
         cd "$(Build.ArtifactStagingDirectory)/$(artifactsName)"
         POD_ARCHIVE=$(find . -name "pod-archive-onnxruntime-c*.zip")
-        cd "$(Build.ArtifactStagingDirectory)/$(artifactsNameForExt)"
-        POD_ARCHIVE_EXT=$(find . -name "pod-archive-onnxruntime-extensions-c*.zip")
 
         shasum -a 256 "$(Build.ArtifactStagingDirectory)/$(artifactsName)/${POD_ARCHIVE}"
-
-        shasum -a 256 "$(Build.ArtifactStagingDirectory)/$(artifactsNameForExt)/${POD_ARCHIVE_EXT}"
-
+        
         cd "$(Build.SourcesDirectory)/tmp/onnxruntime"
-        
-        cp "$(Build.SourcesDirectory)/Package.swift" .
-        cp -r "$(Build.SourcesDirectory)/swift" .
-        cp -r "$(Build.SourcesDirectory)/extensions" .
         cp "$(Build.ArtifactStagingDirectory)/$(artifactsName)/${POD_ARCHIVE}" swift/
-        cp "$(Build.ArtifactStagingDirectory)/$(artifactsNameForExt)/${POD_ARCHIVE_EXT}" swift/
-        
         export ORT_IOS_POD_LOCAL_PATH="swift/${POD_ARCHIVE}"
-        export ORT_EXT_IOS_POD_LOCAL_PATH="swift/${POD_ARCHIVE_EXT}"
-
         xcodebuild test -scheme onnxruntime -destination 'platform=iOS Simulator,name=iPhone 14'
-
-        xcodebuild test -scheme onnxruntime_extensions -destination 'platform=iOS Simulator,name=iPhone 14'
-
-      workingDirectory: "$(Build.SourcesDirectory)/tmp/onnxruntime"
-      displayName: "Print ORT iOS Pod checksum and Test Package.swift usage including extensions"
+        rm swift/pod-archive-onnxruntime-c-*.zip
+      workingDirectory: "$(Build.SourcesDirectory)/tmp"
+      displayName: "Print ORT iOS Pod checksum and Test Package.swift usage"
 
     - template: templates/component-governance-component-detection-steps.yml
       parameters :
