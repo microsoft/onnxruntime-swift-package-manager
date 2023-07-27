@@ -1,27 +1,27 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
-// Licensed under the MIT License.
+// // Copyright (c) Microsoft Corporation. All rights reserved.
+// // Licensed under the MIT License.
 
-#import <Foundation/Foundation.h>
-#include <iostream>
+// #import <Foundation/Foundation.h>
+// #include <iostream>
 
-#include "onnxruntime/onnxruntime_cxx_api.h"
-#include "onnxruntime_extensions/onnxruntime_extensions.h"
+// #include "onnxruntime/onnxruntime_cxx_api.h"
+// #include "onnxruntime_extensions/onnxruntime_extensions.h"
 
-@interface OrtExt
+// @interface OrtExt
 
-+ (void)testRegisterCustomOpsCall;
+// + (void)testRegisterCustomOpsCall;
 
-@end
+// @end
 
 
-@implementation OrtExt
+// @implementation OrtExt
 
-+ (void)testRegisterCustomOpsCall {
-    auto session_options = Ort::SessionOptions();
-    if (RegisterCustomOps(session_options, OrtGetApiBase()) != nullptr) {
-      NSLog(@"RegisterCustomOps FAILED");
-    }
-    NSLog(@"RegisterCustomOps SUCCESS");
-}
+// + (void)testRegisterCustomOpsCall {
+//     auto session_options = Ort::SessionOptions();
+//     if (RegisterCustomOps(session_options, OrtGetApiBase()) != nullptr) {
+//       NSLog(@"RegisterCustomOps FAILED");
+//     }
+//     NSLog(@"RegisterCustomOps SUCCESS");
+// }
 
-@end
+// @end
