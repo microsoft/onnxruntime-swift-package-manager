@@ -80,6 +80,7 @@
         cd "$(Build.SourcesDirectory)/tmp/onnxruntime"
         cp "$(Build.SourcesDirectory)/Package.swift" .
         cp -r "$(Build.SourcesDirectory)/swift" .
+        cp -r "$(Build.SourcesDirectory)/extensions" .
         cp "$(Build.ArtifactStagingDirectory)/$(artifactsName)/${POD_ARCHIVE}" swift/
         cp "$(Build.ArtifactStagingDirectory)/$(artifactsNameForExt)/${POD_ARCHIVE_EXT}" swift/
         
