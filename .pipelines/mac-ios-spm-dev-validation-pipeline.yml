@@ -31,9 +31,7 @@
       workingDirectory: "$(Build.SourcesDirectory)/tmp"
       displayName: "List sparse checkout repo contents"
     
-    # Download artifacts from a specific pipeline 
-    # For now, it consumes rel-1.15.0 version ORT iOS Pod which matches the current source code
-    # TODO: Update branch to latest main of ORT github repo when syncing changes to ORT SPM repo here.
+    # Download artifacts from ort ios packaging pipeline for ort-c pod
     - task: DownloadPipelineArtifact@2
       inputs:
         buildType: 'specific'
@@ -48,6 +46,23 @@
         ls
       workingDirectory: '$(Build.ArtifactStagingDirectory)/$(artifactsName)'
       displayName: "List staged artifacts"
+    
+     # Download artifacts from extensions ios packaging pipeline for ort-extensions-c pod
+     - task: DownloadPipelineArtifact@2
+      inputs:
+        buildType: 'specific'
+        project: 'Lotus'
+        definition: 1206          #'definitionid' is obtained from `System.DefinitionId` of extensions CI: extensions.ios_packaging
+        buildVersionToDownload: 'specific'
+        branchName: 'yguo/change-header-path'   # TODO: update branch name here
+        pipelineID: 331190
+        targetPath: '$(Build.ArtifactStagingDirectory)'
+
+    - script: |
+        set -e -x
+        ls
+      workingDirectory: '$(Build.ArtifactStagingDirectory)/ios_packaging_artifacts'
+      displayName: "List staged artifacts for ORT Ext C Pod"
 
     # copy the pod archive to a path relative to Package.swift and set the env var required by Package.swift to use that.
     # xcodebuild will implicitly use Package.swift and build/run the .testTarget (tests in swift/onnxTests).
