@@ -401,5 +401,3 @@ FodyWeavers.xsd
 *.DS_Store
 
 .build/
-
-.swiftpm/
