@@ -55,7 +55,7 @@
     - script: |
         set -e -x
         cd "$(Build.ArtifactStagingDirectory)/$(artifactsName)"
-        POD_ARCHIVE=$(find . -name "pod-archive-onnxruntime-c*.zip")
+        POD_ARCHIVE=$(find . -name "pod-archive-onnxruntime-c-*.zip")
 
         shasum -a 256 "$(Build.ArtifactStagingDirectory)/$(artifactsName)/${POD_ARCHIVE}"
         
