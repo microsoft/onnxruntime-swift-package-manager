@@ -115,7 +115,7 @@ if let ext_pod_archive_path = ProcessInfo.processInfo.environment["ORT_EXT_IOS_P
     //                          url: "https://onnxruntimepackages.z14.web.core.windows.net/pod-archive-onnxruntime-extensions-c-0.8.0.zip",
     //                          checksum: "1d003770c9a6d0ead92c04ed40d5083e8f4f55ea985750c3efab91489be15512")
     //   )
-    fatalError("It is not valid to use a release version extensions c pod for now.\n" + "
-                Please set ORT_EXT_IOS_POD_LOCAL_PATH environment variable.\n" +
+    fatalError("It is not valid to use a release version extensions c pod for now.\n" +
+                "Please set ORT_EXT_IOS_POD_LOCAL_PATH environment variable.\n" +
                "See Package.swift for more information on using a local pod archive.")
  }
