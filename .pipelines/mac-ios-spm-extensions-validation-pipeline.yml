@@ -46,7 +46,7 @@
 
         xcodebuild -list
 
-        xcodebuild test -scheme onnxruntime_extensions -destination 'platform=iOS Simulator,name=iPhone 14'
+        xcodebuild test -scheme onnxruntime-Package -destination 'platform=iOS Simulator,name=iPhone 14'
         rm swift/pod-archive-onnxruntime-extensions-c-*.zip
       workingDirectory: "$(Build.SourcesDirectory)"
       displayName: "Test Package.swift usage for Extensions"
