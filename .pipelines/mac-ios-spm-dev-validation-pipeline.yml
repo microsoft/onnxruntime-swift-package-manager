@@ -70,37 +70,28 @@
         set -e -x
         cd "$(Build.ArtifactStagingDirectory)/$(artifactsName)"
         POD_ARCHIVE=$(find . -name "pod-archive-onnxruntime-c*.zip")
+        cd "$(Build.ArtifactStagingDirectory)/$(artifactsNameForExt)"
+        POD_ARCHIVE_EXT=$(find . -name "pod-archive-onnxruntime-extensions-c*.zip")
 
         shasum -a 256 "$(Build.ArtifactStagingDirectory)/$(artifactsName)/${POD_ARCHIVE}"
-        
+
+        shasum -a 256 "$(Build.ArtifactStagingDirectory)/$(artifactsNameForExt)/${POD_ARCHIVE_EXT}"
+
         cd "$(Build.SourcesDirectory)/tmp/onnxruntime"
         cp "$(Build.SourcesDirectory)/Package.swift" .
         cp -r "$(Build.SourcesDirectory)/swift" .
         cp "$(Build.ArtifactStagingDirectory)/$(artifactsName)/${POD_ARCHIVE}" swift/
-
+        cp "$(Build.ArtifactStagingDirectory)/$(artifactsNameForExt)/${POD_ARCHIVE_EXT}" swift/
+        
         export ORT_IOS_POD_LOCAL_PATH="swift/${POD_ARCHIVE}"
+        export ORT_EXT_IOS_POD_LOCAL_PATH="swift/${POD_ARCHIVE_EXT}"
+
         xcodebuild test -scheme onnxruntime -destination 'platform=iOS Simulator,name=iPhone 14'
 
-        rm swift/pod-archive-onnxruntime-c-*.zip
-      workingDirectory: "$(Build.SourcesDirectory)/tmp"
-      displayName: "Print ORT iOS Pod checksum and Test Package.swift usage"
-
-    - script: |
-        set -e -x
-        cd "$(Build.ArtifactStagingDirectory)/$(artifactsNameForExt)"
-        POD_ARCHIVE=$(find . -name "pod-archive-onnxruntime-extensions-c*.zip")
-
-        shasum -a 256 "$(Build.ArtifactStagingDirectory)/$(artifactsNameForExt)/${POD_ARCHIVE}"
-        
-        cd "$(Build.SourcesDirectory)/tmp/onnxruntime"
-        cp "$(Build.ArtifactStagingDirectory)/$(artifactsNameForExt)/${POD_ARCHIVE}" swift/
-
-        export ORT_EXT_IOS_POD_LOCAL_PATH="swift/${POD_ARCHIVE}"
         xcodebuild test -scheme onnxruntime_extensions -destination 'platform=iOS Simulator,name=iPhone 14'
 
-        rm swift/pod-archive-onnxruntime-extensions-c-*.zip
       workingDirectory: "$(Build.SourcesDirectory)/tmp"
-      displayName: "Print ORT iOS Pod checksum and Test Package.swift usage"
+      displayName: "Print ORT iOS Pod checksum and Test Package.swift usage including extensions"
 
     - template: templates/component-governance-component-detection-steps.yml
       parameters :
