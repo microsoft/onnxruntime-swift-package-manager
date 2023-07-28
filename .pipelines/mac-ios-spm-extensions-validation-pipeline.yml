@@ -80,7 +80,7 @@
         cd "$(Build.SourcesDirectory)/tmp/onnxruntime"
         cp -r "$(Build.SourcesDirectory)/swift" .  
         cp "$(Build.SourcesDirectory)/Package.swift" .
-        cp "$(Build.SourcesDirectory)/extensions" .
+        cp -r "$(Build.SourcesDirectory)/extensions" .
 
         cp "$(Build.ArtifactStagingDirectory)/$(artifactsName)/${POD_ARCHIVE}" swift/
         export ORT_IOS_POD_LOCAL_PATH="swift/${POD_ARCHIVE}"
