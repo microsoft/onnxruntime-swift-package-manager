@@ -91,7 +91,7 @@
         
         rm swift/pod-archive-onnxruntime-c-*.zip
         rm swift/pod-archive-onnxruntime-extensions-c-*.zip
-      workingDirectory: "$(Build.SourcesDirectory)"/tmp
+      workingDirectory: "$(Build.SourcesDirectory)/tmp"
       displayName: "Test Package.swift usage for ORT and ORT Extensions"
 
     - template: templates/component-governance-component-detection-steps.yml
