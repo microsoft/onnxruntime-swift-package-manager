@@ -7,6 +7,8 @@
 
     variables:
       xcodeVersion: "14.3"
+      artifactsName: "ios_packaging_artifacts_full"
+      artifactsNameForExt: "ios_packaging_artifacts"
 
     timeoutInMinutes: 60
 
@@ -14,8 +16,6 @@
     - template: templates/use-xcode-version.yml
       parameters:
         xcodeVersion: ${{ variables.xcodeVersion }}
-        artifactsName: "ios_packaging_artifacts_full"
-        artifactsNameForExt: "ios_packaging_artifacts"
 
     - script: |
         mkdir tmp
