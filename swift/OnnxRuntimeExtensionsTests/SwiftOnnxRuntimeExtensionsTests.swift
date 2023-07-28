@@ -3,10 +3,11 @@
 
 import XCTest
 import Foundation
-@testable import OnnxRuntimeExtensions
 @testable import OnnxRuntimeBindings
+@testable import OnnxRuntimeExtensions
 
 final class SwiftOnnxRuntimeExtensionsTests: XCTestCase {
+
     let modelPath: String = Bundle.module.url(forResource: "decode_image", withExtension: "onnx")!.path
 
     func testCreateSessionWithCustomOps() throws {

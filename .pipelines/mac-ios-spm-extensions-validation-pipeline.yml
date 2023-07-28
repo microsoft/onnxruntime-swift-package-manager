@@ -64,7 +64,9 @@
         ls
       workingDirectory: '$(Build.ArtifactStagingDirectory)/$(artifactsNameForExt)'
       displayName: "List staged artifacts for ORT Ext C Pod"
-
+    
+    # Note: Running xcodebuild test on `onnxruntime-Package` scheme will perform swift unit tests for both OnnxRuntimeBindings
+    # and OnnxRuntimeExtensions targets.
     - script: |
         set -e -x
         cd "$(Build.ArtifactStagingDirectory)/$(artifactsName)"
