@@ -72,7 +72,7 @@
 
         shasum -a 256 "$(Build.ArtifactStagingDirectory)/$(artifactsName)/${POD_ARCHIVE}"
         
-        cd "$(Build.ArtifactStagingDirectory)/"
+        cd "$(Build.ArtifactStagingDirectory)/$(artifactsNameForExt)"
         POD_ARCHIVE_EXT=$(find . -name "pod-archive-onnxruntime-extensions-c-*.zip")
 
         shasum -a 256 "$(Build.ArtifactStagingDirectory)/$(artifactsNameForExt)/${POD_ARCHIVE_EXT}"
