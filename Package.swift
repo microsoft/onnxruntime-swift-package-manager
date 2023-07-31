@@ -9,8 +9,7 @@
 // For context, the end user's config will look something like:
 //
 //     dependencies: [
-//        #TODO: update to use release 'version' and the new repo url here when available
-//       .package(url: "https://github.com/microsoft/onnxruntime", branch: "rel-1.15.0"), 
+//       .package(url: "https://github.com/microsoft/onnxruntime", from: "1.15.0"), 
 //       ...
 //     ],
 //
