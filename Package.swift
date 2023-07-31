@@ -5,11 +5,11 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 //
-// A user of the Swift Package Manager (SPM) package will consume this file directly from the ORT github repository.
+// A user of the Swift Package Manager (SPM) package will consume this file directly from the ORT SPM github repository.
 // For context, the end user's config will look something like:
 //
 //     dependencies: [
-//       .package(url: "https://github.com/microsoft/onnxruntime", from: "1.15.0"), 
+//       .package(url: "https://github.com/microsoft/onnxruntime-swift-package-manager", from: "1.15.0"), 
 //       ...
 //     ],
 //
