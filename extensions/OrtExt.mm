@@ -27,8 +27,9 @@
     // You MUST call ORTSessionOptions registerCustomOps(usingFunction: "RegisterCustomOps") on the session options
     // instance that is provided to the ORTSession constructor.
     if (RegisterCustomOps(session_options, OrtGetApiBase()) != nullptr) {
-      NSLog(@"Unable to call RegisterCustomOps. This can happen when the extensions headers or extensions target is not available to the package.
-            Please ensure that both ORT and ORT Extensions binary pod archive are correctly included. See Package.swift for more info.");
+      NSLog(@"Unable to call RegisterCustomOps.\n" + 
+            "This can happen when the extensions headers or extensions target is not available to the package.\n" +
+            "Please ensure that both ORT and ORT Extensions binary pod archive are correctly included. See Package.swift for more info.");
     }
     NSLog(@"RegisterCustomOps succeeded.");
 }
