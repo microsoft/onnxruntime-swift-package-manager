@@ -8,7 +8,7 @@
 
 @interface OrtExt : NSObject
 
-// Note: This is like a stub function where it calls `RegisterCustomOp` method from ORT Extensions
+// This is like a stub function where it calls `RegisterCustomOp` method from ORT Extensions
 // so that the function gets used directly otherwise registering custom ops using name would raise
 // a symbol not found error as it has been thrown away (as unused) during linking stage
 + (void)extensionsIncludedInPackage;
@@ -19,9 +19,16 @@
 @implementation OrtExt
 
 + (void)extensionsIncludedInPackage {
+
     auto session_options = Ort::SessionOptions();
+
+    // Note: This is a dummy call to RegisterCustomOps to ensure the extensions library is available.
+    // It does NOT register custom ops for your inference session.
+    // You MUST call ORTSessionOptions registerCustomOps(usingFunction: "RegisterCustomOps") on the session options
+    // instance that is provided to the ORTSession constructor.
     if (RegisterCustomOps(session_options, OrtGetApiBase()) != nullptr) {
-      NSLog(@"Unable to call RegisterCustomOps.");
+      NSLog(@"Unable to call RegisterCustomOps. This can happen when the extensions headers or extensions target is not available to the package.
+            Please ensure that both ORT and ORT Extensions binary pod archive are correctly included. See Package.swift for more info.");
     }
     NSLog(@"RegisterCustomOps succeeded.");
 }
