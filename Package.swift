@@ -112,7 +112,7 @@ if let pod_archive_path = ProcessInfo.processInfo.environment["ORT_IOS_POD_LOCAL
     )
 }
 
-if let ext_pod_archive_path = ProcessInfo.processInfo.environment["ORT_EXT_IOS_POD_LOCAL_PATH"] {
+if let ext_pod_archive_path = ProcessInfo.processInfo.environment["ORT_EXTENSIONS_IOS_POD_LOCAL_PATH"] {
     package.targets.append(Target.binaryTarget(name: "onnxruntime_extensions", path: ext_pod_archive_path))
 }
 // Note: ORT Extensions 0.8.0 release version pod (Currently not working - it gives a header path not found error.)
