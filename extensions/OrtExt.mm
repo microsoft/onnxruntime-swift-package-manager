@@ -8,16 +8,17 @@
 
 @interface OrtExt : NSObject
 
-// Note: This is like a "dummy" function where it calls `RegisterCustomOp` method from ORT Extensions
-// in order to make the symbols available.
-+ (void)registerCustomOpsForOrtExt;
+// Note: This is like a stub function where it calls `RegisterCustomOp` method from ORT Extensions
+// so that the function gets used directly otherwise registering custom ops using name would raise
+// a symbol not found error as it has been thrown away (as unused) during linking stage
++ (void)extensionsIncludedInPackage;
 
 @end
 
 
 @implementation OrtExt
 
-+ (void)registerCustomOpsForOrtExt {
++ (void)extensionsIncludedInPackage {
     auto session_options = Ort::SessionOptions();
     if (RegisterCustomOps(session_options, OrtGetApiBase()) != nullptr) {
       NSLog(@"Unable to call RegisterCustomOps.");

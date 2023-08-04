@@ -21,15 +21,14 @@
         buildType: 'specific'
         project: 'Lotus'
         definition: 1206          #'definitionid' is obtained from `System.DefinitionId` of extensions CI: extensions.ios_packaging
-        buildVersionToDownload: 'specific'
-        branchName: 'yguo/change-header-path'   # TODO: update branch name here
-        pipelineID: 331190
+        buildVersionToDownload: 'latest'
+        branchName: 'main'
         targetPath: '$(Build.ArtifactStagingDirectory)'
 
     - script: |
         set -e -x
         ls
-      workingDirectory: '$(Build.ArtifactStagingDirectory)/ios_packaging_artifacts'
+      workingDirectory: "$(Build.ArtifactStagingDirectory)/ios_packaging_artifacts"
       displayName: "List staged artifacts for ORT Ext C Pod"
 
     # Note: Running xcodebuild test on `onnxruntime-Package` scheme will perform swift tests for both OnnxRuntimeBindings
@@ -39,12 +38,10 @@
 
         cd "$(Build.ArtifactStagingDirectory)/ios_packaging_artifacts"
         POD_ARCHIVE=$(find . -name "pod-archive-onnxruntime-extensions-c-*.zip")
-
-        shasum -a 256 "$(Build.ArtifactStagingDirectory)/ios_packaging_artifacts/${POD_ARCHIVE}"
         
         cd "$(Build.SourcesDirectory)"
         cp "$(Build.ArtifactStagingDirectory)/ios_packaging_artifacts/${POD_ARCHIVE}" swift/
-        export ORT_EXT_IOS_POD_LOCAL_PATH="swift/${POD_ARCHIVE}"
+        export ORT_EXTENSIONS_IOS_POD_LOCAL_PATH="swift/${POD_ARCHIVE}"
 
         xcodebuild test -scheme onnxruntime-Package -destination 'platform=iOS Simulator,name=iPhone 14'
         rm swift/pod-archive-onnxruntime-extensions-c-*.zip
@@ -52,5 +49,5 @@
       displayName: "Test Package.swift usage"
 
     - template: templates/component-governance-component-detection-steps.yml
-      parameters :
-        condition : 'succeeded'
+      parameters:
+        condition: 'succeeded'
