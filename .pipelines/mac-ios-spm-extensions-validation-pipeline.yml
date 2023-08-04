@@ -71,13 +71,13 @@
         cd "$(Build.ArtifactStagingDirectory)/$(artifactsName)"
         POD_ARCHIVE=$(find . -name "pod-archive-onnxruntime-c-*.zip")
         
-        echo "Printing the checksum here for easier update for actual relase pod archive file in Package.swift"
+        echo "Printing the checksum here to make it easier when updating for actual release pod archive file in Package.swift"
         shasum -a 256 "$(Build.ArtifactStagingDirectory)/$(artifactsName)/${POD_ARCHIVE}"
         
         cd "$(Build.ArtifactStagingDirectory)/$(artifactsNameForExt)"
         POD_ARCHIVE_EXT=$(find . -name "pod-archive-onnxruntime-extensions-c-*.zip")
         
-        echo "Printing the checksum here for easier update for actual relase extensions pod archive file in Package.swift"
+        echo "Printing the checksum here to make it easier when updating for actual release extensions pod archive file in Package.swift"
         shasum -a 256 "$(Build.ArtifactStagingDirectory)/$(artifactsNameForExt)/${POD_ARCHIVE_EXT}"
         
         cd "$(Build.SourcesDirectory)/tmp/onnxruntime"
