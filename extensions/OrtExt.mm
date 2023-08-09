@@ -3,11 +3,6 @@
 
 #import "OrtExt.h"
 
-#import <Foundation/Foundation.h>
-
-#include "onnxruntime/onnxruntime_cxx_api.h"
-#include "onnxruntime_extensions/onnxruntime_extensions.h"
-
 @implementation OrtExt
 
 - (void)extensionsIncludedInPackage {

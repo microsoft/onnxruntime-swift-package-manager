@@ -3,6 +3,9 @@
 
 #import <Foundation/Foundation.h>
 
+#include "onnxruntime/onnxruntime_cxx_api.h"
+#include "onnxruntime_extensions/onnxruntime_extensions.h"
+
 @interface OrtExt : NSObject
 
 // This is like a stub function where it called `RegisterCustomOp` method from
