@@ -5,8 +5,8 @@
 
 @interface OrtExt : NSObject
 
-typedef struct OrtStatus *(*ORTCAPIRegisterCustomOpsFnPtr)(struct OrtSessionOptions * /*options*/,
-                                                           const struct OrtApiBase * /*api*/);
+typedef struct OrtStatus* (*ORTCAPIRegisterCustomOpsFnPtr)(struct OrtSessionOptions* /*options*/,
+                                                           const struct OrtApiBase* /*api*/);
 
 + (nonnull ORTCAPIRegisterCustomOpsFnPtr)getRegisterCustomOpsFunctionPointer;
 
