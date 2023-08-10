@@ -3,27 +3,17 @@
 
 #import "OrtExt.h"
 
+#include "onnxruntime_extensions/onnxruntime_extensions.h"
+
 @implementation OrtExt
 
-- (void)extensionsIncludedInPackage {
++ (nonnull ORTCAPIRegisterCustomOpsFnPtr)getRegisterCustomOpsFunctionPointer {
 
-  auto session_options = Ort::SessionOptions();
-
-  // Note: This is a dummy call to RegisterCustomOps to ensure the extensions
-  // library is available. It does NOT register custom ops for your inference
-  // session. You MUST call ORTSessionOptions registerCustomOps(usingFunction:
-  // "RegisterCustomOps") on the session options instance that is provided to
-  // the ORTSession constructor.
-  OrtStatus* ort_status = nullptr;
-
-  if ((ort_status = RegisterCustomOps(session_options, OrtGetApiBase())) != nullptr) {
-    Ort::GetApi().ReleaseStatus(ort_status);
-    NSLog(@"Unable to call RegisterCustomOps.\n"
-           "This can happen when the extensions headers or extensions target is not available to the package.\n"
-           "Please ensure that both ORT and ORT Extensions binary pod archive are correctly included. See Package.swift for more info.");
-  } else {
-    NSLog(@"RegisterCustomOps succeeded.");
-  }
+  // Note: This returns the address of `RegisterCustomOps` function. At swift
+  // level, user can call this function to get the RegisterCustomOpsFnPtr
+  // and use the function pointer to register custom ops. See
+  // SwiftOnnxRuntimeExtensionsTests.swift for an example usage.
+  return RegisterCustomOps;
 }
 
 @end

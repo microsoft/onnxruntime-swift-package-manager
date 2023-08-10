@@ -15,9 +15,12 @@ final class SwiftOnnxRuntimeExtensionsTests: XCTestCase {
         let options = try ORTSessionOptions()
         try options.setLogSeverityLevel(ORTLoggingLevel.verbose)
         try options.setIntraOpNumThreads(1)
-        // Register Custom Ops library using function name
-        try options.registerCustomOps(usingFunction: "RegisterCustomOps")
+
+        // Register Custom Ops library using function pointer
+        let ortCustomOpsFnPtr = OrtExt.getRegisterCustomOpsFunctionPointer()
+        try options.registerCustomOps(functionPointer: ortCustomOpsFnPtr)
+
         // Create the ORTSession
-        _ = try ORTSession(env: env, modelPath: modelPath, sessionOptions: options)      
+        _ = try ORTSession(env: env, modelPath: modelPath, sessionOptions: options)
     }
 }
