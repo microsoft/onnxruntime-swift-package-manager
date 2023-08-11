@@ -68,5 +68,5 @@
       displayName: "Print ORT iOS Pod checksum and Test Package.swift usage"
 
     - template: templates/component-governance-component-detection-steps.yml
-      parameters :
-        condition : 'succeeded'
+      parameters:
+        condition: 'succeeded'

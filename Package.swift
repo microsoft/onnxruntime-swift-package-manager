@@ -24,13 +24,23 @@ let package = Package(
         .library(name: "onnxruntime",
                  type: .static,
                  targets: ["OnnxRuntimeBindings"]),
+        .library(name: "onnxruntime_extensions",
+                 type: .static,
+                 targets: ["OnnxRuntimeExtensions"]),
     ],
     dependencies: [],
     targets: [
         .target(name: "OnnxRuntimeBindings",
                 dependencies: ["onnxruntime"],
                 path: "objectivec",
-                exclude: ["ReadMe.md", "format_objc.sh"],
+                exclude: ["ReadMe.md", "format_objc.sh", "test",
+                            "ort_checkpoint.mm",
+                            "ort_checkpoint_internal.h",
+                            "ort_training_session_internal.h",
+                            "ort_training_session.mm",
+                            "include/ort_checkpoint.h",
+                            "include/ort_training_session.h",
+                            "include/onnxruntime_training.h"],
                 cxxSettings: [
                     .define("SPM_BUILD"),
                     .unsafeFlags(["-std=c++17",
@@ -44,6 +54,23 @@ let package = Package(
                     path: "swift/OnnxRuntimeBindingsTests",
                     resources: [
                         .copy("Resources/single_add.basic.ort")
+                    ]),
+        .target(name: "OnnxRuntimeExtensions",
+                dependencies: ["onnxruntime_extensions", "onnxruntime"],
+                path: "extensions",
+                cxxSettings: [
+                    .define("ORT_SWIFT_PACKAGE_MANAGER_BUILD"),
+                    .unsafeFlags(["-std=c++17",
+                                  "-fobjc-arc-exceptions"
+                                 ]),
+                ], linkerSettings: [
+                    .unsafeFlags(["-ObjC"]),
+                ]),
+        .testTarget(name: "OnnxRuntimeExtensionsTests",
+                    dependencies: ["OnnxRuntimeExtensions", "OnnxRuntimeBindings"],
+                    path: "swift/OnnxRuntimeExtensionsTests",
+                    resources: [
+                        .copy("Resources/decode_image.onnx")
                     ]),
     ]
 )
@@ -83,3 +110,18 @@ if let pod_archive_path = ProcessInfo.processInfo.environment["ORT_IOS_POD_LOCAL
                            checksum: "9b41412329a73d7d298b1d94ab40ae9adb65cb84f132054073bc82515b4f5f82")
     )
 }
+
+if let ext_pod_archive_path = ProcessInfo.processInfo.environment["ORT_EXTENSIONS_IOS_POD_LOCAL_PATH"] {
+    package.targets.append(Target.binaryTarget(name: "onnxruntime_extensions", path: ext_pod_archive_path))
+}
+// Note: ORT Extensions 0.8.0 release version pod (Currently not working - it gives a header path not found error.)
+ else {
+    //   package.targets.append(
+    //      Target.binaryTarget(name: "onnxruntime_extensions",
+    //                          url: "https://onnxruntimepackages.z14.web.core.windows.net/pod-archive-onnxruntime-extensions-c-0.8.0.zip",
+    //                          checksum: "1d003770c9a6d0ead92c04ed40d5083e8f4f55ea985750c3efab91489be15512")
+    //   )
+    fatalError("It is not valid to use a release version extensions c pod for now.\n" +
+               "Please set ORT_EXTENSIONS_IOS_POD_LOCAL_PATH environment variable to specify a location for local dev version pod.\n" +
+               "See Package.swift for more information on using a local pod archive.")
+ }

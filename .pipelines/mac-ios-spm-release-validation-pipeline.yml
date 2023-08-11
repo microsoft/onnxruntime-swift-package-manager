@@ -14,13 +14,40 @@
     - template: templates/use-xcode-version.yml
       parameters:
         xcodeVersion: ${{ variables.xcodeVersion }}
+    
+    # Note: Currently it requires a dev version extensions c pod for testing
+    - task: DownloadPipelineArtifact@2
+      inputs:
+        buildType: 'specific'
+        project: 'Lotus'
+        definition: 1206          #'definitionid' is obtained from `System.DefinitionId` of extensions CI: extensions.ios_packaging
+        buildVersionToDownload: 'latest'
+        branchName: 'main'
+        targetPath: '$(Build.ArtifactStagingDirectory)'
 
     - script: |
         set -e -x
-        xcodebuild test -scheme onnxruntime -destination 'platform=iOS Simulator,name=iPhone 14'
+        ls
+      workingDirectory: "$(Build.ArtifactStagingDirectory)/ios_packaging_artifacts"
+      displayName: "List staged artifacts for ORT Ext C Pod"
+
+    # Note: Running xcodebuild test on `onnxruntime-Package` scheme will perform swift tests for both OnnxRuntimeBindings
+    # and OnnxRuntimeExtensions targets.
+    - script: |
+        set -e -x
+
+        cd "$(Build.ArtifactStagingDirectory)/ios_packaging_artifacts"
+        POD_ARCHIVE=$(find . -name "pod-archive-onnxruntime-extensions-c-*.zip")
+        
+        cd "$(Build.SourcesDirectory)"
+        cp "$(Build.ArtifactStagingDirectory)/ios_packaging_artifacts/${POD_ARCHIVE}" swift/
+        export ORT_EXTENSIONS_IOS_POD_LOCAL_PATH="swift/${POD_ARCHIVE}"
+
+        xcodebuild test -scheme onnxruntime-Package -destination 'platform=iOS Simulator,name=iPhone 14'
+        rm swift/pod-archive-onnxruntime-extensions-c-*.zip
       workingDirectory: "$(Build.SourcesDirectory)"
       displayName: "Test Package.swift usage"
 
     - template: templates/component-governance-component-detection-steps.yml
-      parameters :
-        condition : 'succeeded'
+      parameters:
+        condition: 'succeeded'

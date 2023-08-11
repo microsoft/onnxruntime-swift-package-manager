@@ -1,0 +1,102 @@
+  jobs:
+  - job: j
+    displayName: "Test with ORT Extensions native pod"
+
+    pool:
+      vmImage: "macOS-13"
+
+    variables:
+      xcodeVersion: "14.3"
+      artifactsName: "ios_packaging_artifacts_full"
+      artifactsNameForExt: "ios_packaging_artifacts"
+
+    timeoutInMinutes: 60
+
+    steps:
+    - template: templates/use-xcode-version.yml
+      parameters:
+        xcodeVersion: ${{ variables.xcodeVersion }}
+
+    - script: |
+        mkdir tmp
+        cd tmp
+        git clone -n --depth=1 --filter=tree:0 https://github.com/microsoft/onnxruntime.git
+        cd onnxruntime
+        git sparse-checkout set --no-cone objectivec
+        git checkout
+      workingDirectory: "$(Build.SourcesDirectory)"
+      displayName: "Sparse checkout objectivec/ folders from latest ORT main repository"
+    
+    - script: |
+        ls -R  "$(Build.SourcesDirectory)/tmp/onnxruntime"
+      workingDirectory: "$(Build.SourcesDirectory)/tmp"
+      displayName: "List sparse checkout repo contents"
+    
+    # Download artifacts for ORT C pod from iOS packaging pipeline
+    - task: DownloadPipelineArtifact@2
+      inputs:
+        buildType: 'specific'
+        project: 'Lotus'
+        definition: 995          #'definitionid' is obtained from `System.DefinitionId` of ORT CI: onnxruntime-ios-packaging-pipeline
+        buildVersionToDownload: 'latest'
+        branchName: 'main'
+        targetPath: '$(Build.ArtifactStagingDirectory)'
+
+    - script: |
+        set -e -x
+        ls
+      workingDirectory: '$(Build.ArtifactStagingDirectory)/$(artifactsName)'
+      displayName: "List staged artifacts for ORT C Pod"
+
+    # Download artifacts for ORT Ext C pod from extensions iOS packaging pipeline
+    - task: DownloadPipelineArtifact@2
+      inputs:
+        buildType: 'specific'
+        project: 'Lotus'
+        definition: 1206          #'definitionid' is obtained from `System.DefinitionId` of extensions CI: extensions.ios_packaging
+        buildVersionToDownload: 'latest'
+        branchName: 'main'
+        targetPath: '$(Build.ArtifactStagingDirectory)'
+
+    - script: |
+        set -e -x
+        ls
+      workingDirectory: '$(Build.ArtifactStagingDirectory)/$(artifactsNameForExt)'
+      displayName: "List staged artifacts for ORT Ext C Pod"
+    
+    # Note: Running xcodebuild test on `onnxruntime-Package` scheme will perform swift unit tests for both OnnxRuntimeBindings
+    # and OnnxRuntimeExtensions targets.
+    - script: |
+        set -e -x
+        cd "$(Build.ArtifactStagingDirectory)/$(artifactsName)"
+        POD_ARCHIVE=$(find . -name "pod-archive-onnxruntime-c-*.zip")
+        
+        echo "Printing the checksum here to make it easier when updating for actual release pod archive file in Package.swift"
+        shasum -a 256 "$(Build.ArtifactStagingDirectory)/$(artifactsName)/${POD_ARCHIVE}"
+        
+        cd "$(Build.ArtifactStagingDirectory)/$(artifactsNameForExt)"
+        POD_ARCHIVE_EXT=$(find . -name "pod-archive-onnxruntime-extensions-c-*.zip")
+        
+        echo "Printing the checksum here to make it easier when updating for actual release extensions pod archive file in Package.swift"
+        shasum -a 256 "$(Build.ArtifactStagingDirectory)/$(artifactsNameForExt)/${POD_ARCHIVE_EXT}"
+        
+        cd "$(Build.SourcesDirectory)/tmp/onnxruntime"
+        cp -r "$(Build.SourcesDirectory)/swift" .  
+        cp "$(Build.SourcesDirectory)/Package.swift" .
+        cp -r "$(Build.SourcesDirectory)/extensions" .
+
+        cp "$(Build.ArtifactStagingDirectory)/$(artifactsName)/${POD_ARCHIVE}" swift/
+        export ORT_IOS_POD_LOCAL_PATH="swift/${POD_ARCHIVE}"
+        cp "$(Build.ArtifactStagingDirectory)/$(artifactsNameForExt)/${POD_ARCHIVE_EXT}" swift/
+        export ORT_EXTENSIONS_IOS_POD_LOCAL_PATH="swift/${POD_ARCHIVE_EXT}"
+
+        xcodebuild test -scheme onnxruntime-Package -destination 'platform=iOS Simulator,name=iPhone 14'
+        
+        rm swift/pod-archive-onnxruntime-c-*.zip
+        rm swift/pod-archive-onnxruntime-extensions-c-*.zip
+      workingDirectory: "$(Build.SourcesDirectory)/tmp"
+      displayName: "Test Package.swift usage for ORT and ORT Extensions"
+
+    - template: templates/component-governance-component-detection-steps.yml
+      parameters:
+        condition: 'succeeded'
