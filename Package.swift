@@ -120,7 +120,7 @@ if let ext_pod_archive_path = ProcessInfo.processInfo.environment["ORT_EXTENSION
     //   package.targets.append(
     //      Target.binaryTarget(name: "onnxruntime_extensions",
     //                          url: "https://onnxruntimepackages.z14.web.core.windows.net/pod-archive-onnxruntime-extensions-c-<major.minor.patch>.zip",
-    //                          checksum: "1d003770c9a6d0ead92c04ed40d5083e8f4f55ea985750c3efab91489be15512")
+    //                          checksum: "Insert checksum here")
     //   )
     fatalError("It is not valid to use a release version extensions c pod for now.\n" +
                "Please set ORT_EXTENSIONS_IOS_POD_LOCAL_PATH environment variable to specify a location for local dev version pod.\n" +
