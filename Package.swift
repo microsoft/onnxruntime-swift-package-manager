@@ -8,6 +8,7 @@
 // A user of the Swift Package Manager (SPM) package will consume this file directly from the ORT SPM github repository.
 // For context, the end user's config will look something like:
 //
+// TODO: UPDATE VERSION NUMBER HERE ONCE A 1.16.0 RELEASE IS CONDUCTED ON THE SPM REPO
 //     dependencies: [
 //       .package(url: "https://github.com/microsoft/onnxruntime-swift-package-manager", from: "1.15.0"), 
 //       ...
@@ -19,7 +20,7 @@ import class Foundation.ProcessInfo
 
 let package = Package(
     name: "onnxruntime",
-    platforms: [.iOS(.v11)],
+    platforms: [.iOS(.v12)],
     products: [
         .library(name: "onnxruntime",
                  type: .static,
@@ -103,22 +104,22 @@ if let pod_archive_path = ProcessInfo.processInfo.environment["ORT_IOS_POD_LOCAL
     package.targets.append(Target.binaryTarget(name: "onnxruntime", path: pod_archive_path))
 
 } else {
-    // ORT 1.15.0 release
+    // ORT 1.16.0 release
     package.targets.append(
        Target.binaryTarget(name: "onnxruntime",
-                           url: "https://onnxruntimepackages.z14.web.core.windows.net/pod-archive-onnxruntime-c-1.15.0.zip",
-                           checksum: "9b41412329a73d7d298b1d94ab40ae9adb65cb84f132054073bc82515b4f5f82")
+                           url: "https://onnxruntimepackages.z14.web.core.windows.net/pod-archive-onnxruntime-c-1.16.0.zip",
+                           checksum: "684f317081d6795e5fd619972bc5dd9a648156ba9d3e0fb2292314582a216d8e")
     )
 }
 
 if let ext_pod_archive_path = ProcessInfo.processInfo.environment["ORT_EXTENSIONS_IOS_POD_LOCAL_PATH"] {
     package.targets.append(Target.binaryTarget(name: "onnxruntime_extensions", path: ext_pod_archive_path))
 }
-// Note: ORT Extensions 0.8.0 release version pod (Currently not working - it gives a header path not found error.)
+// Note: ORT Extensions latest release version pod currently is not working (it gives a header path not found error.)
  else {
     //   package.targets.append(
     //      Target.binaryTarget(name: "onnxruntime_extensions",
-    //                          url: "https://onnxruntimepackages.z14.web.core.windows.net/pod-archive-onnxruntime-extensions-c-0.8.0.zip",
+    //                          url: "https://onnxruntimepackages.z14.web.core.windows.net/pod-archive-onnxruntime-extensions-c-<major.minor.patch>.zip",
     //                          checksum: "1d003770c9a6d0ead92c04ed40d5083e8f4f55ea985750c3efab91489be15512")
     //   )
     fatalError("It is not valid to use a release version extensions c pod for now.\n" +
