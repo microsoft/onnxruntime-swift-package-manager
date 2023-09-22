@@ -114,15 +114,11 @@ if let pod_archive_path = ProcessInfo.processInfo.environment["ORT_IOS_POD_LOCAL
 
 if let ext_pod_archive_path = ProcessInfo.processInfo.environment["ORT_EXTENSIONS_IOS_POD_LOCAL_PATH"] {
     package.targets.append(Target.binaryTarget(name: "onnxruntime_extensions", path: ext_pod_archive_path))
-}
-// Note: ORT Extensions latest release version pod currently is not working (it gives a header path not found error.)
- else {
-    //   package.targets.append(
-    //      Target.binaryTarget(name: "onnxruntime_extensions",
-    //                          url: "https://onnxruntimepackages.z14.web.core.windows.net/pod-archive-onnxruntime-extensions-c-<major.minor.patch>.zip",
-    //                          checksum: "Insert checksum here")
-    //   )
-    fatalError("It is not valid to use a release version extensions c pod for now.\n" +
-               "Please set ORT_EXTENSIONS_IOS_POD_LOCAL_PATH environment variable to specify a location for local dev version pod.\n" +
-               "See Package.swift for more information on using a local pod archive.")
+} else {
+     // ORT Extensions 0.9.0 release
+      package.targets.append(
+         Target.binaryTarget(name: "onnxruntime_extensions",
+                             url: "https://onnxruntimepackages.z14.web.core.windows.net/pod-archive-onnxruntime-extensions-c-0.9.0.zip",
+                             checksum: "Insert checksum here")
+      )
  }
