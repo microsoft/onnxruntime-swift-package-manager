@@ -119,6 +119,6 @@ if let ext_pod_archive_path = ProcessInfo.processInfo.environment["ORT_EXTENSION
       package.targets.append(
          Target.binaryTarget(name: "onnxruntime_extensions",
                              url: "https://onnxruntimepackages.z14.web.core.windows.net/pod-archive-onnxruntime-extensions-c-0.9.0.zip",
-                             checksum: "Insert checksum here")
+                             checksum: "2549ae80482a1de285aa54cc07440b7daf8a93f91043eff6ba56b6e73274d6cf")
       )
  }
