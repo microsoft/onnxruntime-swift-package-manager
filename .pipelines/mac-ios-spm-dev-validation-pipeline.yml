@@ -32,8 +32,7 @@
       displayName: "List sparse checkout repo contents"
     
     # Download artifacts from a specific pipeline 
-    # For now, it consumes rel-1.15.0 version ORT iOS Pod which matches the current source code
-    # TODO: Update branch to latest main of ORT github repo when syncing changes to ORT SPM repo here.
+    # It consumes a latest dev version ORT iOS Pod which should match with the source code
     - task: DownloadPipelineArtifact@2
       inputs:
         buildType: 'specific'
