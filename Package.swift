@@ -43,11 +43,6 @@ let package = Package(
                             "include/onnxruntime_training.h"],
                 cxxSettings: [
                     .define("SPM_BUILD"),
-                    .unsafeFlags(["-std=c++17",
-                                  "-fobjc-arc-exceptions"
-                                 ]),
-                ], linkerSettings: [
-                    .unsafeFlags(["-ObjC"]),
                 ]),
         .testTarget(name: "OnnxRuntimeBindingsTests",
                     dependencies: ["OnnxRuntimeBindings"],
@@ -60,11 +55,6 @@ let package = Package(
                 path: "extensions",
                 cxxSettings: [
                     .define("ORT_SWIFT_PACKAGE_MANAGER_BUILD"),
-                    .unsafeFlags(["-std=c++17",
-                                  "-fobjc-arc-exceptions"
-                                 ]),
-                ], linkerSettings: [
-                    .unsafeFlags(["-ObjC"]),
                 ]),
         .testTarget(name: "OnnxRuntimeExtensionsTests",
                     dependencies: ["OnnxRuntimeExtensions", "OnnxRuntimeBindings"],
@@ -72,7 +62,8 @@ let package = Package(
                     resources: [
                         .copy("Resources/decode_image.onnx")
                     ]),
-    ]
+    ],
+    cxxLanguageStandard: .cxx17
 )
 
 // Add the ORT iOS Pod archive as a binary target.
