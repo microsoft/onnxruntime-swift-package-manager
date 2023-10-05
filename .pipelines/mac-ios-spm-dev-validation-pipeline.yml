@@ -15,27 +15,6 @@
     - template: templates/use-xcode-version.yml
       parameters:
         xcodeVersion: ${{ variables.xcodeVersion }}
-
-    - script: |
-        mkdir tmp
-        cd tmp
-        git clone -n --depth=1 --filter=tree:0 https://github.com/microsoft/onnxruntime.git
-        cd onnxruntime
-        git sparse-checkout set --no-cone objectivec
-        git checkout
-      workingDirectory: "$(Build.SourcesDirectory)"
-      displayName: "Sparse checkout objectivec/ folders from latest ORT main repository"
-
-    - script: |
-        cp -r swift/ tmp/onnxruntime/swift/
-        cp Package.swift  tmp/onnxruntime/
-      workingDirectory: "$(Build.SourcesDirectory)"
-      displayName: "Copy swift files from ORT SPM main into testing tmp folder"
-
-    - script: |
-        ls -R  "$(Build.SourcesDirectory)/tmp/onnxruntime"
-      workingDirectory: "$(Build.SourcesDirectory)/tmp"
-      displayName: "List sparse checkout repo contents"
     
     # Download artifacts from a specific pipeline 
     # It consumes a latest dev version ORT iOS Pod which should match with the source code
@@ -54,6 +33,13 @@
       workingDirectory: '$(Build.ArtifactStagingDirectory)/$(artifactsName)'
       displayName: "List staged artifacts"
 
+    - script: |
+        POD_ARCHIVE=$(find . -name "pod-archive-onnxruntime-objc*.zip")
+        unzip ${POD_ARCHIVE} -d unzipped
+        cp -rf unzipped/objectivec/ $(Build.SourcesDirectory)/onnxruntime/objectivec/
+      workingDirectory: '$(Build.ArtifactStagingDirectory)/$(artifactsName)'
+      displayName: Copy latest dev version ORT objectivec/ source files to current main
+
     # copy the pod archive to a path relative to Package.swift and set the env var required by Package.swift to use that.
     # xcodebuild will implicitly use Package.swift and build/run the .testTarget (tests in swift/onnxTests).
     # once that's done cleanup the copy of the pod zip file
@@ -64,12 +50,11 @@
 
         shasum -a 256 "$(Build.ArtifactStagingDirectory)/$(artifactsName)/${POD_ARCHIVE}"
         
-        cd "$(Build.SourcesDirectory)/tmp/onnxruntime"
         cp "$(Build.ArtifactStagingDirectory)/$(artifactsName)/${POD_ARCHIVE}" swift/
         export ORT_IOS_POD_LOCAL_PATH="swift/${POD_ARCHIVE}"
-        xcodebuild test -scheme onnxruntime -destination 'platform=iOS Simulator,name=iPhone 14'
+        xcodebuild test -scheme onnxruntime-Package -destination 'platform=iOS Simulator,name=iPhone 14'
         rm swift/pod-archive-onnxruntime-c-*.zip
-      workingDirectory: "$(Build.SourcesDirectory)/tmp"
+      workingDirectory: "$(Build.SourcesDirectory)/"
       displayName: "Print ORT iOS Pod checksum and Test Package.swift usage"
 
     - template: templates/component-governance-component-detection-steps.yml
