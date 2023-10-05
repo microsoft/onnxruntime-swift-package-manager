@@ -38,7 +38,7 @@
         unzip ${POD_ARCHIVE} -d unzipped
         cp -rf unzipped/objectivec/ $(Build.SourcesDirectory)/onnxruntime/objectivec/
       workingDirectory: '$(Build.ArtifactStagingDirectory)/$(artifactsName)'
-      displayName: Copy latest dev version ORT objectivec/ source files to current main
+      displayName: Copy latest dev version ORT objectivec/ source files
 
     # copy the pod archive to a path relative to Package.swift and set the env var required by Package.swift to use that.
     # xcodebuild will implicitly use Package.swift and build/run the .testTarget (tests in swift/onnxTests).
@@ -54,7 +54,7 @@
         export ORT_IOS_POD_LOCAL_PATH="swift/${POD_ARCHIVE}"
         xcodebuild test -scheme onnxruntime-Package -destination 'platform=iOS Simulator,name=iPhone 14'
         rm swift/pod-archive-onnxruntime-c-*.zip
-      workingDirectory: "$(Build.SourcesDirectory)/"
+      workingDirectory: "$(Build.SourcesDirectory)"
       displayName: "Print ORT iOS Pod checksum and Test Package.swift usage"
 
     - template: templates/component-governance-component-detection-steps.yml
