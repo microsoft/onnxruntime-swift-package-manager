@@ -36,7 +36,7 @@
     - script: |
         POD_ARCHIVE=$(find . -name "pod-archive-onnxruntime-objc*.zip")
         unzip ${POD_ARCHIVE} -d unzipped
-        cp -rf unzipped/objectivec/ $(Build.SourcesDirectory)/onnxruntime/objectivec/
+        cp -rf unzipped/objectivec/ $(Build.SourcesDirectory)/objectivec/
       workingDirectory: '$(Build.ArtifactStagingDirectory)/$(artifactsName)'
       displayName: Copy latest dev version ORT objectivec/ source files
 
