@@ -7,7 +7,7 @@ SPM is the alternative to CocoaPods when desired platform to consume is mobile i
 
 ## Note
 
-The `objectivec/` and `swift/` directories are copied from ORT repo and it's expected to match. It will be updated periodically/before release to merge the newly checked-in changes for objective-c/swift on ORT main repo.
+The `objectivec/` directory is copied from the [ORT repo](https://github.com/microsoft/onnxruntime/tree/main/objectivec) and it's expected to match. It will be updated periodically/before release to merge new changes.
 
 ## Contributing
 
