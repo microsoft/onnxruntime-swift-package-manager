@@ -38,8 +38,8 @@
         buildType: 'specific'
         project: 'Lotus'
         definition: 995          #'definitionid' is obtained from `System.DefinitionId` of ORT CI: onnxruntime-ios-packaging-pipeline
-        buildVersionToDownload: 'latest'
-        branchName: 'main'
+        buildVersionToDownload: 'latestFromBranch'
+        branchName: 'refs/heads/main'
         targetPath: '$(Build.ArtifactStagingDirectory)'
 
     - script: |
@@ -54,8 +54,8 @@
         buildType: 'specific'
         project: 'Lotus'
         definition: 1206          #'definitionid' is obtained from `System.DefinitionId` of extensions CI: extensions.ios_packaging
-        buildVersionToDownload: 'latest'
-        branchName: 'main'
+        buildVersionToDownload: 'latestFromBranch'
+        branchName: 'refs/heads/main'
         targetPath: '$(Build.ArtifactStagingDirectory)'
 
     - script: |
@@ -91,6 +91,8 @@
         export ORT_EXTENSIONS_IOS_POD_LOCAL_PATH="swift/${POD_ARCHIVE_EXT}"
 
         xcodebuild test -scheme onnxruntime-Package -destination 'platform=iOS Simulator,name=iPhone 14'
+
+        xcodebuild test -scheme onnxruntime-Package -destination 'platform=macosx'
         
         rm swift/pod-archive-onnxruntime-c-*.zip
         rm swift/pod-archive-onnxruntime-extensions-c-*.zip
