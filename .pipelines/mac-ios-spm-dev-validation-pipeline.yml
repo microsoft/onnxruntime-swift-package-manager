@@ -23,8 +23,8 @@
         buildType: 'specific'
         project: 'Lotus'
         definition: 995          #'definitionid' is obtained from `System.DefinitionId` of ORT CI: onnxruntime-ios-packaging-pipeline
-        buildVersionToDownload: 'latest'
-        branchName: 'main'
+        buildVersionToDownload: 'latestFromBranch'
+        branchName: 'refs/heads/main'
         targetPath: '$(Build.ArtifactStagingDirectory)'
 
     - script: |
