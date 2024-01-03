@@ -12,7 +12,8 @@
 //       .package(url: "https://github.com/microsoft/onnxruntime-swift-package-manager", from: "1.16.0"), 
 //       ...
 //     ],
-//
+// NOTE: For specifying valid and latest release version above, please refer to this page:
+// https://github.com/microsoft/onnxruntime-swift-package-manager/releases
 
 import PackageDescription
 import class Foundation.ProcessInfo
