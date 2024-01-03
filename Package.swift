@@ -8,12 +8,12 @@
 // A user of the Swift Package Manager (SPM) package will consume this file directly from the ORT SPM github repository.
 // For context, the end user's config will look something like:
 //
-// TODO: UPDATE VERSION NUMBER HERE ONCE A 1.16.0 RELEASE IS CONDUCTED ON THE SPM REPO
 //     dependencies: [
-//       .package(url: "https://github.com/microsoft/onnxruntime-swift-package-manager", from: "1.15.0"), 
+//       .package(url: "https://github.com/microsoft/onnxruntime-swift-package-manager", from: "1.16.0"), 
 //       ...
 //     ],
-//
+// NOTE: For specifying valid and latest release version above, please refer to this page:
+// https://github.com/microsoft/onnxruntime-swift-package-manager/releases
 
 import PackageDescription
 import class Foundation.ProcessInfo
