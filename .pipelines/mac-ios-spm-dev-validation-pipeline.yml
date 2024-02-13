@@ -54,6 +54,9 @@
         cp "$(Build.ArtifactStagingDirectory)/$(artifactsName)/${POD_ARCHIVE}" swift/
         export ORT_IOS_POD_LOCAL_PATH="swift/${POD_ARCHIVE}"
         xcodebuild test -scheme onnxruntime-Package -destination 'platform=iOS Simulator,name=iPhone 14'
+
+        xcodebuild test -scheme onnxruntime-Package -destination 'platform=macosx'
+        
         rm swift/pod-archive-onnxruntime-c-*.zip
       workingDirectory: "$(Build.SourcesDirectory)"
       displayName: "Print ORT iOS Pod checksum and Test Package.swift usage"

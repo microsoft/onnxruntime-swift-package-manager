@@ -20,6 +20,7 @@
     - script: |
         set -e -x
         xcodebuild test -scheme onnxruntime-Package -destination 'platform=iOS Simulator,name=iPhone 14'
+        xcodebuild test -scheme onnxruntime-Package -destination 'platform=macosx'
       workingDirectory: "$(Build.SourcesDirectory)"
       displayName: "Test Package.swift usage"
 
