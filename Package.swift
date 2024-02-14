@@ -96,21 +96,21 @@ if let pod_archive_path = ProcessInfo.processInfo.environment["ORT_IOS_POD_LOCAL
     package.targets.append(Target.binaryTarget(name: "onnxruntime", path: pod_archive_path))
 
 } else {
-    // ORT 1.16.0 release
+    // ORT 1.17.0 release
     package.targets.append(
        Target.binaryTarget(name: "onnxruntime",
-                           url: "https://onnxruntimepackages.z14.web.core.windows.net/pod-archive-onnxruntime-c-1.16.0.zip",
-                           checksum: "684f317081d6795e5fd619972bc5dd9a648156ba9d3e0fb2292314582a216d8e")
+                           url: "https://onnxruntimepackages.z14.web.core.windows.net/pod-archive-onnxruntime-c-1.17.0.zip",
+                           checksum: "1623e1150507d9e50554e3d3e5cf9abf75e1bfd8324b74a602acfe45343db871")
     )
 }
 
 if let ext_pod_archive_path = ProcessInfo.processInfo.environment["ORT_EXTENSIONS_IOS_POD_LOCAL_PATH"] {
     package.targets.append(Target.binaryTarget(name: "onnxruntime_extensions", path: ext_pod_archive_path))
 } else {
-     // ORT Extensions 0.9.0 release
+     // ORT Extensions 0.10.0 release
       package.targets.append(
          Target.binaryTarget(name: "onnxruntime_extensions",
-                             url: "https://onnxruntimepackages.z14.web.core.windows.net/pod-archive-onnxruntime-extensions-c-0.9.0.zip",
-                             checksum: "2549ae80482a1de285aa54cc07440b7daf8a93f91043eff6ba56b6e73274d6cf")
+                             url: "https://onnxruntimepackages.z14.web.core.windows.net/pod-archive-onnxruntime-extensions-c-0.10.0.zip",
+                             checksum: "c0fbe30bcf898b0f7428e913918803372ba986ed9c662c1b8300ceaff3f442e0")
       )
  }
