@@ -6,7 +6,6 @@
       vmImage: "macOS-13"
 
     variables:
-      xcodeVersion: "14.3"
       artifactsName: "ios_packaging_artifacts_full"
       artifactsNameForExt: "ios_packaging_artifacts"
 
@@ -14,8 +13,6 @@
 
     steps:
     - template: templates/use-xcode-version.yml
-      parameters:
-        xcodeVersion: ${{ variables.xcodeVersion }}
 
     - script: |
         mkdir tmp
