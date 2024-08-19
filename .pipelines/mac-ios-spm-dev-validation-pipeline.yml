@@ -49,7 +49,7 @@
 
         cd "$(Build.SourcesDirectory)"
         cp "$(Build.ArtifactStagingDirectory)/$(artifactsName)/${POD_ARCHIVE}" swift/
-        export ORT_IOS_POD_LOCAL_PATH="swift/${POD_ARCHIVE}"
+        export ORT_POD_LOCAL_PATH="swift/${POD_ARCHIVE}"
         xcodebuild test -scheme onnxruntime-Package -destination 'platform=iOS Simulator,name=iPhone 14'
 
         xcodebuild test -scheme onnxruntime-Package -destination 'platform=macosx'
