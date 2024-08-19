@@ -95,21 +95,23 @@ if let pod_archive_path = ProcessInfo.processInfo.environment["ORT_POD_LOCAL_PAT
     package.targets.append(Target.binaryTarget(name: "onnxruntime", path: pod_archive_path))
 
 } else {
-    // ORT 1.18.0 release
+    // ORT release
     package.targets.append(
        Target.binaryTarget(name: "onnxruntime",
-                           url: "https://download.onnxruntime.ai/pod-archive-onnxruntime-c-1.18.0.zip",
-                           checksum: "9f196b7d09129177f529be63a91e18731ab1ccc830828e29edcbe95bd652fa5c")
+                           url: "https://download.onnxruntime.ai/pod-archive-onnxruntime-c-1.19.0.zip",
+                           // SHA256 checksum
+                           checksum: "d1e052ad20a323b74d1ea233e6ee6b5a58789c7025778861cdc7a08cb6b3181a")
     )
 }
 
 if let ext_pod_archive_path = ProcessInfo.processInfo.environment["ORT_EXTENSIONS_POD_LOCAL_PATH"] {
     package.targets.append(Target.binaryTarget(name: "onnxruntime_extensions", path: ext_pod_archive_path))
 } else {
-    // ORT Extensions 0.11.0 release
+    // ORT Extensions release
     package.targets.append(
         Target.binaryTarget(name: "onnxruntime_extensions",
-                            url: "https://download.onnxruntime.ai/pod-archive-onnxruntime-extensions-c-0.11.0.zip",
-                            checksum: "289e8b7847116744946003ed21e1ac9ee4897c3aca48e261238e329634c27c0a")
+                            url: "https://download.onnxruntime.ai/pod-archive-onnxruntime-extensions-c-0.12.0.zip",
+                            // SHA256 checksum
+                            checksum: "542be5904cf2cc93db6b8afcd11b023b001333e3151bea8bff1c7b1cf8959fab")
     )
- }
+}
