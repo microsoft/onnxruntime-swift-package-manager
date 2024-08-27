@@ -85,7 +85,7 @@ if let pod_archive_path = ProcessInfo.processInfo.environment["ORT_POD_LOCAL_PAT
     // To build locally, tools/ci_build/github/apple/build_and_assemble_apple_pods.py can be used
     // See https://onnxruntime.ai/docs/build/custom.html#ios
     //  Example command:
-    //    python tools/ci_build/github/apple/build_and_assemble_apple_pods.py \
+    //    python3 tools/ci_build/github/apple/build_and_assemble_apple_pods.py \
     //      --variant Full \
     //      --build-settings-file tools/ci_build/github/apple/default_full_apple_framework_build_settings.json
     //
