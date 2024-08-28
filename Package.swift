@@ -6,13 +6,14 @@
 // Licensed under the MIT License.
 //
 // A user of the Swift Package Manager (SPM) package will consume this file directly from the ORT SPM github repository.
-// For context, the end user's config will look something like:
+// For example, the end user's config will look something like:
 //
 //     dependencies: [
 //       .package(url: "https://github.com/microsoft/onnxruntime-swift-package-manager", from: "1.16.0"), 
 //       ...
 //     ],
-// NOTE: For specifying valid and latest release version above, please refer to this page:
+//
+// NOTE: For valid version numbers, please refer to this page:
 // https://github.com/microsoft/onnxruntime-swift-package-manager/releases
 
 import PackageDescription
@@ -20,7 +21,7 @@ import class Foundation.ProcessInfo
 
 let package = Package(
     name: "onnxruntime",
-    platforms: [.iOS(.v12),
+    platforms: [.iOS(.v13),
                 .macOS(.v11)],
     products: [
         .library(name: "onnxruntime",
@@ -68,49 +69,49 @@ let package = Package(
     cxxLanguageStandard: .cxx17
 )
 
-// Add the ORT iOS Pod archive as a binary target.
+// Add the ORT CocoaPods C/C++ pod archive as a binary target.
 //
 // There are 2 scenarios:
+// - Target will be set to a released pod archive and its checksum.
 //
-// Release version of ORT SPM github repo:
-//    Target will be set to the latest released ORT iOS pod archive and its checksum.
-//
-// Current main of ORT SPM github repo:
-//    Target will be set to the pod archive built in sync with the current main objective-c source code.
+// - Target will be set to a local pod archive.
+//   This can be used to test with the latest (not yet released) ORT Objective-C source code.
 
-// CI or local testing where you have built/obtained the iOS Pod archive matching the current source code.
-// Requires the ORT_IOS_POD_LOCAL_PATH environment variable to be set to specify the location of the pod.
-if let pod_archive_path = ProcessInfo.processInfo.environment["ORT_IOS_POD_LOCAL_PATH"] {
-    // ORT_IOS_POD_LOCAL_PATH MUST be a path that is relative to Package.swift.
+// CI or local testing where you have built/obtained the pod archive matching the current source code.
+// Requires the ORT_POD_LOCAL_PATH environment variable to be set to specify the location of the pod.
+if let pod_archive_path = ProcessInfo.processInfo.environment["ORT_POD_LOCAL_PATH"] {
+    // ORT_POD_LOCAL_PATH MUST be a path that is relative to Package.swift.
     //
-    // To build locally, tools/ci_build/github/apple/build_and_assemble_ios_pods.py can be used
+    // To build locally, tools/ci_build/github/apple/build_and_assemble_apple_pods.py can be used
     // See https://onnxruntime.ai/docs/build/custom.html#ios
     //  Example command:
-    //    python3 tools/ci_build/github/apple/build_and_assemble_ios_pods.py \
+    //    python3 tools/ci_build/github/apple/build_and_assemble_apple_pods.py \
     //      --variant Full \
-    //      --build-settings-file tools/ci_build/github/apple/default_full_ios_framework_build_settings.json
+    //      --build-settings-file tools/ci_build/github/apple/default_full_apple_framework_build_settings.json
     //
-    // This should produce the pod archive in build/ios_pod_staging, and ORT_IOS_POD_LOCAL_PATH can be set to
-    // "build/ios_pod_staging/pod-archive-onnxruntime-c-???.zip" where '???' is replaced by the version info in the
+    // This should produce the pod archive in build/apple_pod_staging, and ORT_POD_LOCAL_PATH can be set to
+    // "build/apple_pod_staging/pod-archive-onnxruntime-c-???.zip" where '???' is replaced by the version info in the
     // actual filename.
     package.targets.append(Target.binaryTarget(name: "onnxruntime", path: pod_archive_path))
 
 } else {
-    // ORT 1.18.0 release
+    // ORT release
     package.targets.append(
        Target.binaryTarget(name: "onnxruntime",
-                           url: "https://download.onnxruntime.ai/pod-archive-onnxruntime-c-1.18.0.zip",
-                           checksum: "9f196b7d09129177f529be63a91e18731ab1ccc830828e29edcbe95bd652fa5c")
+                           url: "https://download.onnxruntime.ai/pod-archive-onnxruntime-c-1.19.0.zip",
+                           // SHA256 checksum
+                           checksum: "d1e052ad20a323b74d1ea233e6ee6b5a58789c7025778861cdc7a08cb6b3181a")
     )
 }
 
-if let ext_pod_archive_path = ProcessInfo.processInfo.environment["ORT_EXTENSIONS_IOS_POD_LOCAL_PATH"] {
+if let ext_pod_archive_path = ProcessInfo.processInfo.environment["ORT_EXTENSIONS_POD_LOCAL_PATH"] {
     package.targets.append(Target.binaryTarget(name: "onnxruntime_extensions", path: ext_pod_archive_path))
 } else {
-     // ORT Extensions 0.11.0 release
-      package.targets.append(
-         Target.binaryTarget(name: "onnxruntime_extensions",
-                             url: "https://download.onnxruntime.ai/pod-archive-onnxruntime-extensions-c-0.11.0.zip",
-                             checksum: "289e8b7847116744946003ed21e1ac9ee4897c3aca48e261238e329634c27c0a")
-      )
- }
+    // ORT Extensions release
+    package.targets.append(
+        Target.binaryTarget(name: "onnxruntime_extensions",
+                            url: "https://download.onnxruntime.ai/pod-archive-onnxruntime-extensions-c-0.12.0.zip",
+                            // SHA256 checksum
+                            checksum: "542be5904cf2cc93db6b8afcd11b023b001333e3151bea8bff1c7b1cf8959fab")
+    )
+}

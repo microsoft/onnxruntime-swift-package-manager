@@ -5,15 +5,10 @@
     pool:
       vmImage: "macOS-13"
 
-    variables:
-      xcodeVersion: "14.3"
-
     timeoutInMinutes: 60
 
     steps:
     - template: templates/use-xcode-version.yml
-      parameters:
-        xcodeVersion: ${{ variables.xcodeVersion }}
 
     # Note: Running xcodebuild test on `onnxruntime-Package` scheme will perform swift tests for both OnnxRuntimeBindings
     # and OnnxRuntimeExtensions targets.

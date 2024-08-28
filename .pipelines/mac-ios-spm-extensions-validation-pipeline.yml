@@ -6,7 +6,6 @@
       vmImage: "macOS-13"
 
     variables:
-      xcodeVersion: "14.3"
       artifactsName: "ios_packaging_artifacts_full"
       artifactsNameForExt: "ios_packaging_artifacts"
 
@@ -14,8 +13,6 @@
 
     steps:
     - template: templates/use-xcode-version.yml
-      parameters:
-        xcodeVersion: ${{ variables.xcodeVersion }}
 
     - script: |
         mkdir tmp
@@ -86,9 +83,9 @@
         cp -r "$(Build.SourcesDirectory)/extensions" .
 
         cp "$(Build.ArtifactStagingDirectory)/$(artifactsName)/${POD_ARCHIVE}" swift/
-        export ORT_IOS_POD_LOCAL_PATH="swift/${POD_ARCHIVE}"
+        export ORT_POD_LOCAL_PATH="swift/${POD_ARCHIVE}"
         cp "$(Build.ArtifactStagingDirectory)/$(artifactsNameForExt)/${POD_ARCHIVE_EXT}" swift/
-        export ORT_EXTENSIONS_IOS_POD_LOCAL_PATH="swift/${POD_ARCHIVE_EXT}"
+        export ORT_EXTENSIONS_POD_LOCAL_PATH="swift/${POD_ARCHIVE_EXT}"
 
         xcodebuild test -scheme onnxruntime-Package -destination 'platform=iOS Simulator,name=iPhone 14'
 

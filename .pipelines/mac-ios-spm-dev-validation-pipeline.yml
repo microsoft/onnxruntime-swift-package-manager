@@ -6,15 +6,12 @@
       vmImage: "macOS-13"
 
     variables:
-      xcodeVersion: "14.3"
       artifactsName: "ios_packaging_artifacts_full"
 
     timeoutInMinutes: 60
 
     steps:
     - template: templates/use-xcode-version.yml
-      parameters:
-        xcodeVersion: ${{ variables.xcodeVersion }}
     
     # Download artifacts from a specific pipeline 
     # It consumes a latest dev version ORT iOS Pod which should match with the source code
@@ -52,7 +49,7 @@
 
         cd "$(Build.SourcesDirectory)"
         cp "$(Build.ArtifactStagingDirectory)/$(artifactsName)/${POD_ARCHIVE}" swift/
-        export ORT_IOS_POD_LOCAL_PATH="swift/${POD_ARCHIVE}"
+        export ORT_POD_LOCAL_PATH="swift/${POD_ARCHIVE}"
         xcodebuild test -scheme onnxruntime-Package -destination 'platform=iOS Simulator,name=iPhone 14'
 
         xcodebuild test -scheme onnxruntime-Package -destination 'platform=macosx'
