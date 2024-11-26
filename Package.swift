@@ -36,7 +36,7 @@ let package = Package(
         .target(name: "OnnxRuntimeBindings",
                 dependencies: ["onnxruntime"],
                 path: "objectivec",
-                exclude: ["ReadMe.md", "format_objc.sh", "test",
+                exclude: ["ReadMe.md", "format_objc.sh",
                             "ort_checkpoint.mm",
                             "ort_checkpoint_internal.h",
                             "ort_training_session_internal.h",
