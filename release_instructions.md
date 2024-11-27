@@ -27,7 +27,6 @@ https://github.com/microsoft/onnxruntime-swift-package-manager/blob/bbc428e168a0
 
 https://github.com/microsoft/onnxruntime-swift-package-manager/blob/bbc428e168a0374eb7d0503cdb7c73fdc1d99751/Package.swift#L110-L116
 
-
 ```swift
     // ORT release
     package.targets.append(
@@ -41,14 +40,26 @@ https://github.com/microsoft/onnxruntime-swift-package-manager/blob/bbc428e168a0
 ```
 
 Update the version in the URL and checksum for both onnxruntime and onnxruntime-extensions targets.
+To get the checksum value, download the file from the updated URL and compute its SHA256 checksum.
 
-To compute the checksum, download the file from the updated URL and compute its SHA256 checksum (e.g., with `sha256sum` on Linux or MacOS).
+To compute a SHA256 checksum on Linux or MacOS:
+```
+sha256sum pod-archive-onnxruntime-c-x.y.z.zip
+```
+
+To compute a SHA256 checksum on Windows with Powershell:
+```
+(Get-FileHash -Algorithm SHA256 pod-archive-onnxruntime-c-x.y.z.zip).Hash.ToLower()
+```
 
 
 ## 3. Check in updates and create a release
 
-Check in the changes made in the previous steps to `main`.
-
 Note: This repo is updated relatively infrequently, so we currently do not have a release process that uses a separate release branch.
 
-Create the release tag from the `main`. The tag should match the tag of the corresponding onnxruntime version, e.g., `v1.20.0`.
+Check in the changes made in the previous steps to the `main` branch.
+
+Create a release tag from the `main` branch.
+
+The tag should match the tag of the corresponding onnxruntime release excluding the leading `v`.
+E.g., for onnxruntime tag `v1.20.0`, the onnxruntime-swift-package-manager tag should be `1.20.0`.
