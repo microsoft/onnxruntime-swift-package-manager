@@ -61,5 +61,5 @@ Check in the changes made in the previous steps to the `main` branch.
 
 Create a release tag from the `main` branch.
 
-The tag should match the tag of the corresponding onnxruntime release excluding the leading `v`.
+The tag should match the tag of the corresponding onnxruntime release excluding the leading `v` in order to make it a valid semantic version string.
 E.g., for onnxruntime tag `v1.20.0`, the onnxruntime-swift-package-manager tag should be `1.20.0`.
