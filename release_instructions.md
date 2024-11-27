@@ -16,11 +16,6 @@ Sync the onnxruntime Objective-C source files.
 # Replace objectivec directory.
 rm -r <onnxruntime-swift-package-manager repo>/objectivec
 cp -r <onnxruntime repo>/objectivec <onnxruntime-swift-package-manager repo>/objectivec
-
-# Remove objectivec subdirectories that are not used by this repo.
-# The following directories are unused as of onnxruntime 1.20.
-rm -r <onnxruntime-swift-package-manager repo>/objectivec/docs
-rm -r <onnxruntime-swift-package-manager repo>/objectivec/test
 ```
 
 
