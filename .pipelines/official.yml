@@ -13,7 +13,7 @@ resources:
     ref: refs/tags/release
 
 extends:
-  template: v1/1ES.Unofficial.PipelineTemplate.yml@1esPipelines
+  template: v1/1ES.Official.PipelineTemplate.yml@1esPipelines
   parameters:
     pool:
       name: Azure Pipelines
@@ -30,7 +30,7 @@ extends:
       codeql:
         sourceLanguages: python
       tsa:
-        enabled: false
+        enabled: true
         configFile: '$(Build.SourcesDirectory)\.config\tsaoptions.json'
     stages:
     - stage: Stage
