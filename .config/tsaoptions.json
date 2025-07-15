@@ -1,9 +1,9 @@
 {
-  "notificationAliases": ["xiaowuhu@microsoft.com"],
+  "notificationAliases": ["onnxruntime-org@microsoft.com"],
   "areaPath": "ONNX Runtime\\Extensions",
-  "codebaseName": "onnxconverter-common",
+  "codebaseName": "onnxruntime-swift-package-manager",
   "instanceUrl": "https://aiinfra.visualstudio.com/",
   "projectName": "ONNX Runtime",
-  "ignoreBranchName": true,
+  "ignoreBranchName": false,
   "template": "AIINFRA_TSA"
 }

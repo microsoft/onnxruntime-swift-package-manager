@@ -27,7 +27,7 @@ jobs:
       unzip ${POD_ARCHIVE} -d unzipped
       cp -rf unzipped/objectivec/ $(Build.SourcesDirectory)/objectivec/
     # Corrected variable name to match the parameter
-    workingDirectory: '$(Build.ArtifactStagingDirectory)/$(artifactName)'
+    workingDirectory: '$(Build.ArtifactStagingDirectory)/${{ parameters.artifactName }}'
     displayName: Copy latest dev version ORT objectivec/ source files
 
   # copy the pod archive to a path relative to Package.swift and set the env var required by Package.swift to use that.
@@ -36,13 +36,13 @@ jobs:
   - script: |
       set -e -x
       # Corrected variable name to match the parameter
-      cd "$(Build.ArtifactStagingDirectory)/$(artifactName)"
+      cd "$(Build.ArtifactStagingDirectory)/${{ parameters.artifactName }}"
       POD_ARCHIVE=$(find . -name "pod-archive-onnxruntime-c*.zip")
 
-      shasum -a 256 "$(Build.ArtifactStagingDirectory)/$(artifactName)/${POD_ARCHIVE}"
+      shasum -a 256 "$(Build.ArtifactStagingDirectory)/${{ parameters.artifactName }}/${POD_ARCHIVE}"
 
       cd "$(Build.SourcesDirectory)"
-      cp "$(Build.ArtifactStagingDirectory)/$(artifactName)/${POD_ARCHIVE}" swift/
+      cp "$(Build.ArtifactStagingDirectory)/${{ parameters.artifactName }}/${POD_ARCHIVE}" swift/
       export ORT_POD_LOCAL_PATH="swift/${POD_ARCHIVE}"
       xcodebuild test -scheme onnxruntime-Package -destination 'platform=iOS Simulator,name=iPhone 14'
 
