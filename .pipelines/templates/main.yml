@@ -13,14 +13,6 @@ jobs:
       artifactName: '${{ parameters.artifactName }}'
       targetPath: '$(Build.ArtifactStagingDirectory)/${{ parameters.artifactName }}'
   steps:
-  - task: UsePythonVersion@0
-    inputs:
-      versionSpec: '3.x'
-      architecture: 'x64'
-  - task: PipAuthenticate@1
-    displayName: 'Pip Authenticate'
-    inputs:
-      artifactFeeds: 'Lotus'
   - script: |
       set -e -x
       POD_ARCHIVE=$(find . -name "pod-archive-onnxruntime-objc*.zip")
