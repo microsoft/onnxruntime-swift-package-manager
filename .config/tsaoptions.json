@@ -1,0 +1,9 @@
+{
+  "notificationAliases": ["onnxruntime-org@microsoft.com"],
+  "areaPath": "ONNX Runtime\\Engineering Systems",
+  "codebaseName": "onnxruntime-swift-package-manager",
+  "instanceUrl": "https://aiinfra.visualstudio.com/",
+  "projectName": "ONNX Runtime",
+  "ignoreBranchName": false,
+  "template": "AIINFRA_TSA"
+}
