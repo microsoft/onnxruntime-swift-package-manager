@@ -19,7 +19,7 @@ extends:
       networkIsolationPolicy: Preferred, GitHub
     pool:
       name: Azure Pipelines
-      image: "macOS-13"
+      image: "macOS-14"
       os: macOS      
     sdl:
       sourceAnalysisPool:
