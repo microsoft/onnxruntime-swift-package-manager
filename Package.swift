@@ -98,9 +98,9 @@ if let pod_archive_path = ProcessInfo.processInfo.environment["ORT_POD_LOCAL_PAT
     // ORT release
     package.targets.append(
        Target.binaryTarget(name: "onnxruntime",
-                           url: "https://download.onnxruntime.ai/pod-archive-onnxruntime-c-1.20.0.zip",
+                           url: "https://download.onnxruntime.ai/pod-archive-onnxruntime-c-1.23.0.zip",
                            // SHA256 checksum
-                           checksum: "50891a8aadd17d4811acb05ed151ba6c394129bb3ab14e843b0fc83a48d450ff")
+                           checksum: "756a78e0168f29840bc614b43aeb03e63673f44022e0221d21698a2c8ed747ef")
     )
 }
 
