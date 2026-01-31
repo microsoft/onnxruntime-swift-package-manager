@@ -59,4 +59,76 @@ final class SwiftOnnxRuntimeBindingsTests: XCTestCase {
             XCTFail(error.localizedDescription)
         }
     }
+
+    func testCreateBoolTensorTrue() throws {
+        do {
+            var boolValue: Bool = true
+            let data = NSMutableData(bytes: &boolValue, length: MemoryLayout<Bool>.size)
+            let tensor = try ORTValue(
+                tensorData: data,
+                elementType: .bool,
+                shape: [1]
+            )
+
+            let typeInfo = try tensor.tensorTypeAndShapeInfo()
+            XCTAssertEqual(typeInfo.elementType, .bool)
+            XCTAssertEqual(typeInfo.shape, [1])
+
+            let tensorData = try tensor.tensorData()
+            let readValue = (tensorData as Data).withUnsafeBytes { ptr -> Bool in
+                return ptr.load(as: Bool.self)
+            }
+            XCTAssertTrue(readValue)
+        } catch let error {
+            XCTFail(error.localizedDescription)
+        }
+    }
+
+    func testCreateBoolTensorFalse() throws {
+        do {
+            var boolValue: Bool = false
+            let data = NSMutableData(bytes: &boolValue, length: MemoryLayout<Bool>.size)
+            let tensor = try ORTValue(
+                tensorData: data,
+                elementType: .bool,
+                shape: [1]
+            )
+
+            let typeInfo = try tensor.tensorTypeAndShapeInfo()
+            XCTAssertEqual(typeInfo.elementType, .bool)
+            XCTAssertEqual(typeInfo.shape, [1])
+
+            let tensorData = try tensor.tensorData()
+            let readValue = (tensorData as Data).withUnsafeBytes { ptr -> Bool in
+                return ptr.load(as: Bool.self)
+            }
+            XCTAssertFalse(readValue)
+        } catch let error {
+            XCTFail(error.localizedDescription)
+        }
+    }
+
+    func testCreateBoolTensorArray() throws {
+        do {
+            var boolValues: [Bool] = [true, false, true, false]
+            let data = NSMutableData(bytes: &boolValues, length: boolValues.count * MemoryLayout<Bool>.stride)
+            let tensor = try ORTValue(
+                tensorData: data,
+                elementType: .bool,
+                shape: [NSNumber(value: boolValues.count)]
+            )
+
+            let typeInfo = try tensor.tensorTypeAndShapeInfo()
+            XCTAssertEqual(typeInfo.elementType, .bool)
+            XCTAssertEqual(typeInfo.shape, [4])
+
+            let tensorData = try tensor.tensorData()
+            let readValues = (tensorData as Data).withUnsafeBytes { ptr -> [Bool] in
+                return Array(ptr.bindMemory(to: Bool.self))
+            }
+            XCTAssertEqual(readValues, [true, false, true, false])
+        } catch let error {
+            XCTFail(error.localizedDescription)
+        }
+    }
 }
