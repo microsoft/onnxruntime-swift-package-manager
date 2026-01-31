@@ -87,6 +87,38 @@ NS_ASSUME_NONNULL_BEGIN
   XCTAssertTrue([stringData isEqualToArray:returnedStringData]);
 }
 
+- (void)testInitBoolTensorOk {
+  bool values[] = {true, false, true, false};
+  NSMutableData* data = [[NSMutableData alloc] initWithBytes:values
+                                                      length:4 * sizeof(bool)];
+  NSArray<NSNumber*>* shape = @[ @4 ];
+
+  const ORTTensorElementDataType elementType = ORTTensorElementDataTypeBool;
+
+  NSError* err = nil;
+  ORTValue* ortValue = [[ORTValue alloc] initWithTensorData:data
+                                                elementType:elementType
+                                                      shape:shape
+                                                      error:&err];
+  ORTAssertNullableResultSuccessful(ortValue, err);
+
+  ORTTensorTypeAndShapeInfo* tensorInfo = [ortValue tensorTypeAndShapeInfoWithError:&err];
+  ORTAssertNullableResultSuccessful(tensorInfo, err);
+  XCTAssertEqual(tensorInfo.elementType, elementType);
+  XCTAssertEqualObjects(tensorInfo.shape, shape);
+
+  NSData* actualData = [ortValue tensorDataWithError:&err];
+  ORTAssertNullableResultSuccessful(actualData, err);
+  XCTAssertEqual(actualData.length, 4 * sizeof(bool));
+
+  bool actualValues[4];
+  memcpy(actualValues, actualData.bytes, 4 * sizeof(bool));
+  XCTAssertEqual(actualValues[0], true);
+  XCTAssertEqual(actualValues[1], false);
+  XCTAssertEqual(actualValues[2], true);
+  XCTAssertEqual(actualValues[3], false);
+}
+
 @end
 
 NS_ASSUME_NONNULL_END
