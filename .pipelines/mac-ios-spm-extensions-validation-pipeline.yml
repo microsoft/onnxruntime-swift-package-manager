@@ -87,7 +87,7 @@
         cp "$(Build.ArtifactStagingDirectory)/$(artifactsNameForExt)/${POD_ARCHIVE_EXT}" swift/
         export ORT_EXTENSIONS_POD_LOCAL_PATH="swift/${POD_ARCHIVE_EXT}"
 
-        xcodebuild test -scheme onnxruntime-Package -destination 'platform=iOS Simulator,name=iPhone 14'
+        xcodebuild test -scheme onnxruntime-Package -destination 'platform=iOS Simulator,name=iPhone 16'
 
         xcodebuild test -scheme onnxruntime-Package -destination 'platform=macosx'
         
