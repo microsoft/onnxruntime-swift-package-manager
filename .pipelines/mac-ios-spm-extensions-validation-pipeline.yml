@@ -89,7 +89,7 @@
 
         xcodebuild test -scheme onnxruntime-Package -destination 'platform=iOS Simulator,name=iPhone 16'
 
-        xcodebuild test -scheme onnxruntime-Package -destination 'platform=macosx'
+        xcodebuild test -scheme onnxruntime-Package -destination 'platform=macOS'
         
         rm swift/pod-archive-onnxruntime-c-*.zip
         rm swift/pod-archive-onnxruntime-extensions-c-*.zip
