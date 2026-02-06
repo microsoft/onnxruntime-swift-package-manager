@@ -3,7 +3,7 @@
     displayName: "Test with released ORT native pod"
 
     pool:
-      vmImage: "macOS-13"
+      vmImage: "macOS-14"
 
     timeoutInMinutes: 60
 
