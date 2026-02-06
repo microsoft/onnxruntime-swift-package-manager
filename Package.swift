@@ -1,7 +1,5 @@
-// swift-tools-version: 5.6
-//   The swift-tools-version declares the minimum version of Swift required to build this package and MUST be the first
-//   line of this file. 5.6 is required to support zip files for the pod archive binaryTarget.
-//
+// swift-tools-version: 5.9
+
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 //
