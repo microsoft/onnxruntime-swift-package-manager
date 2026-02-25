@@ -3,7 +3,7 @@
     displayName: "Test with ORT Extensions native pod"
 
     pool:
-      vmImage: "macOS-13"
+      vmImage: "macOS-14"
 
     variables:
       artifactsName: "ios_packaging_artifacts_full"
@@ -87,9 +87,9 @@
         cp "$(Build.ArtifactStagingDirectory)/$(artifactsNameForExt)/${POD_ARCHIVE_EXT}" swift/
         export ORT_EXTENSIONS_POD_LOCAL_PATH="swift/${POD_ARCHIVE_EXT}"
 
-        xcodebuild test -scheme onnxruntime-Package -destination 'platform=iOS Simulator,name=iPhone 14'
+        xcodebuild test -scheme onnxruntime-Package -destination 'platform=iOS Simulator,name=iPhone 16'
 
-        xcodebuild test -scheme onnxruntime-Package -destination 'platform=macosx'
+        xcodebuild test -scheme onnxruntime-Package -destination 'platform=macOS'
         
         rm swift/pod-archive-onnxruntime-c-*.zip
         rm swift/pod-archive-onnxruntime-extensions-c-*.zip

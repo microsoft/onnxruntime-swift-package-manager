@@ -1,7 +1,5 @@
-// swift-tools-version: 5.6
-//   The swift-tools-version declares the minimum version of Swift required to build this package and MUST be the first
-//   line of this file. 5.6 is required to support zip files for the pod archive binaryTarget.
-//
+// swift-tools-version: 5.9
+
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 //
@@ -21,8 +19,8 @@ import class Foundation.ProcessInfo
 
 let package = Package(
     name: "onnxruntime",
-    platforms: [.iOS(.v13),
-                .macOS(.v11)],
+    platforms: [.iOS(.v15),
+                .macOS(.v14)],
     products: [
         .library(name: "onnxruntime",
                  type: .static,
@@ -86,7 +84,6 @@ if let pod_archive_path = ProcessInfo.processInfo.environment["ORT_POD_LOCAL_PAT
     // See https://onnxruntime.ai/docs/build/custom.html#ios
     //  Example command:
     //    python3 tools/ci_build/github/apple/build_and_assemble_apple_pods.py \
-    //      --variant Full \
     //      --build-settings-file tools/ci_build/github/apple/default_full_apple_framework_build_settings.json
     //
     // This should produce the pod archive in build/apple_pod_staging, and ORT_POD_LOCAL_PATH can be set to
@@ -98,9 +95,9 @@ if let pod_archive_path = ProcessInfo.processInfo.environment["ORT_POD_LOCAL_PAT
     // ORT release
     package.targets.append(
        Target.binaryTarget(name: "onnxruntime",
-                           url: "https://download.onnxruntime.ai/pod-archive-onnxruntime-c-1.23.0.zip",
+                           url: "https://download.onnxruntime.ai/pod-archive-onnxruntime-c-1.24.1.zip",
                            // SHA256 checksum
-                           checksum: "756a78e0168f29840bc614b43aeb03e63673f44022e0221d21698a2c8ed747ef")
+                           checksum: "dab5e98ceba017cfcb74d4a03cc3ab3f0069ede02bc9334ee81ebee310e6e639")
     )
 }
 
