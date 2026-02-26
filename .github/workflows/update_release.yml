@@ -1,0 +1,84 @@
+name: Update Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      ort_version:
+        description: 'OnnxRuntime Version (e.g., 1.20.0). Leave empty to fetch latest.'
+        required: false
+      extensions_version:
+        description: 'OnnxRuntime Extensions Version (e.g., 0.13.0). Leave empty to fetch latest.'
+        required: false
+  schedule:
+    - cron: '0 0 * * *' # Daily at midnight
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0 # Fetch all history for tags
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Run Update Script
+        id: update
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          python .github/scripts/update_release.py \
+            --ort-version "${{ inputs.ort_version }}" \
+            --ext-version "${{ inputs.extensions_version }}" \
+            --github-token "${{ secrets.GITHUB_TOKEN }}"
+
+      - name: Check for changes
+        id: check_changes
+        run: |
+          if [[ -z "$(git status --porcelain)" ]]; then
+            echo "changes=false" >> $GITHUB_OUTPUT
+            echo "No changes to commit."
+          else
+            echo "changes=true" >> $GITHUB_OUTPUT
+            echo "Changes detected."
+          fi
+
+      - name: Commit and Push
+        if: steps.check_changes.outputs.changes == 'true'
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          
+          ORT_VER="${{ steps.update.outputs.ort_version }}"
+          EXT_VER="${{ steps.update.outputs.ext_version }}"
+          ORT_TAG="${{ steps.update.outputs.ort_tag }}"
+          EXT_TAG="${{ steps.update.outputs.ext_tag }}"
+          
+          git add objectivec Package.swift
+          git commit -m "Update to onnxruntime $ORT_VER and extensions $EXT_VER"
+          git tag "$ORT_TAG"
+          git push origin main
+          git push origin "$ORT_TAG"
+
+      - name: Create Release
+        if: steps.check_changes.outputs.changes == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          ORT_VER="${{ steps.update.outputs.ort_version }}"
+          EXT_VER="${{ steps.update.outputs.ext_version }}"
+          ORT_TAG="${{ steps.update.outputs.ort_tag }}"
+
+          if gh release view "$ORT_TAG" >/dev/null 2>&1; then
+            echo "Release $ORT_TAG already exists. Skipping creation."
+          else
+            gh release create "$ORT_TAG" --title "onnxruntime $ORT_TAG" --notes "Update to onnxruntime $ORT_VER and extensions $EXT_VER"
+          fi
