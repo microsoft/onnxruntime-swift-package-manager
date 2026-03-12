@@ -38,7 +38,7 @@ jobs:
       export ORT_POD_LOCAL_PATH="swift/${POD_ARCHIVE}"
       xcodebuild test -scheme onnxruntime-Package -destination 'platform=iOS Simulator,name=iPhone 16'
 
-      xcodebuild test -scheme onnxruntime-Package -destination 'platform=macosx'
+      xcodebuild test -scheme onnxruntime-Package -destination 'platform=macOS'
 
       rm swift/pod-archive-onnxruntime-c-*.zip
     workingDirectory: "$(Build.SourcesDirectory)"
