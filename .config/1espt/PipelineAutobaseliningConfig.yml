@@ -16,12 +16,12 @@ pipelines:
     retail:
       source:
         credscan:
-          lastModifiedDate: 2025-07-17
+          lastModifiedDate: 2026-08-12
         policheck:
-          lastModifiedDate: 2025-07-17
+          lastModifiedDate: 2026-08-12
         eslint:
-          lastModifiedDate: 2025-07-17
+          lastModifiedDate: 2026-08-12
         psscriptanalyzer:
-          lastModifiedDate: 2025-07-17
+          lastModifiedDate: 2026-08-12
         armory:
-          lastModifiedDate: 2025-07-17
+          lastModifiedDate: 2026-08-12
