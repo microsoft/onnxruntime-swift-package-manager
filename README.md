@@ -1,13 +1,21 @@
 # Swift Package Manager for ONNX Runtime
 
-A light-weight repository for providing [Swift Package Manager (SPM)](https://www.swift.org/package-manager/) support for [ONNXRuntime](https://github.com/microsoft/onnxruntime). The ONNX Runtime native package is included as a binary dependency of the SPM package.
+A light-weight repository for providing [Swift Package Manager (SPM)](https://www.swift.org/package-manager/) support for [ONNX Runtime](https://github.com/microsoft/onnxruntime) (ORT). The ORT native package is included as a binary dependency of the SPM package.
 
 
 SPM is the alternative to CocoaPods when desired platform to consume is mobile iOS.
 
-## Note
+## Updating `objectivec/`
 
 The `objectivec/` directory is copied from the [ORT repo](https://github.com/microsoft/onnxruntime/tree/main/objectivec) and it's expected to match. It will be updated periodically/before release to merge new changes.
+
+## Telemetry
+
+The official ORT build that this package distributes has telemetry enabled by default.
+
+Telemetry can be disabled at runtime by setting environment variable `ORT_DISABLE_TELEMETRY` to `1` before ORT initializes.
+
+See the ORT repo's [`docs/Privacy.md`](https://github.com/microsoft/onnxruntime/blob/v1.30.0/docs/Privacy.md) for more information.
 
 ## Contributing
 
