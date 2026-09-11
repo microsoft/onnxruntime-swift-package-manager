@@ -17,9 +17,23 @@
 import PackageDescription
 import class Foundation.ProcessInfo
 
+// These frameworks are linked by the ORT telemetry implementation which is enabled in the binary target build.
+// The framework list is specified here:
+// https://github.com/microsoft/onnxruntime/blob/v1.30.0/cmake/onnxruntime.cmake#L124-L134
+// TODO avoid duplicating this list
+let onnxRuntimeTelemetryLinkerSettings: [LinkerSetting] = [
+    .linkedFramework("CoreFoundation"),
+    .linkedFramework("Foundation"),
+    .linkedFramework("Network"),
+    .linkedFramework("Security"),
+    .linkedFramework("SystemConfiguration"),
+    .linkedFramework("UIKit", .when(platforms: [.iOS])),
+    .linkedFramework("IOKit", .when(platforms: [.macOS])),
+]
+
 let package = Package(
     name: "onnxruntime",
-    platforms: [.iOS(.v15),
+    platforms: [.iOS("15.1"),
                 .macOS(.v14)],
     products: [
         .library(name: "onnxruntime",
@@ -44,7 +58,8 @@ let package = Package(
                             "include/onnxruntime_training.h"],
                 cxxSettings: [
                     .define("SPM_BUILD"),
-                ]),
+                ],
+                linkerSettings: onnxRuntimeTelemetryLinkerSettings),
         .testTarget(name: "OnnxRuntimeBindingsTests",
                     dependencies: ["OnnxRuntimeBindings"],
                     path: "swift/OnnxRuntimeBindingsTests",
@@ -56,7 +71,8 @@ let package = Package(
                 path: "extensions",
                 cxxSettings: [
                     .define("ORT_SWIFT_PACKAGE_MANAGER_BUILD"),
-                ]),
+                ],
+                linkerSettings: onnxRuntimeTelemetryLinkerSettings),
         .testTarget(name: "OnnxRuntimeExtensionsTests",
                     dependencies: ["OnnxRuntimeExtensions", "OnnxRuntimeBindings"],
                     path: "swift/OnnxRuntimeExtensionsTests",
@@ -95,9 +111,9 @@ if let pod_archive_path = ProcessInfo.processInfo.environment["ORT_POD_LOCAL_PAT
     // ORT release
     package.targets.append(
        Target.binaryTarget(name: "onnxruntime",
-                           url: "https://download.onnxruntime.ai/pod-archive-onnxruntime-c-1.24.2.zip",
+                           url: "https://download.onnxruntime.ai/pod-archive-onnxruntime-c-1.30.0.zip",
                            // SHA256 checksum
-                           checksum: "f7100a992d2a8135168c8afd831e6a58b465349101982aa58b3e11d36e600b54")
+                           checksum: "e6f1670c14406fd9f082bb400ab197a9b0a9646058ca6366e440642e2b54a2ea")
     )
 }
 
