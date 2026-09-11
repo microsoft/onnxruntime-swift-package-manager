@@ -17,6 +17,20 @@
 import PackageDescription
 import class Foundation.ProcessInfo
 
+// These frameworks are linked by the ORT telemetry implementation which is enabled in the binary target build.
+// The framework list is specified here:
+// https://github.com/microsoft/onnxruntime/blob/v1.30.0/cmake/onnxruntime.cmake#L124-L134
+// TODO avoid duplicating this list
+let onnxRuntimeTelemetryLinkerSettings: [LinkerSetting] = [
+    .linkedFramework("CoreFoundation"),
+    .linkedFramework("Foundation"),
+    .linkedFramework("Network"),
+    .linkedFramework("Security"),
+    .linkedFramework("SystemConfiguration"),
+    .linkedFramework("UIKit", .when(platforms: [.iOS])),
+    .linkedFramework("IOKit", .when(platforms: [.macOS])),
+]
+
 let package = Package(
     name: "onnxruntime",
     platforms: [.iOS("15.1"),
@@ -44,7 +58,8 @@ let package = Package(
                             "include/onnxruntime_training.h"],
                 cxxSettings: [
                     .define("SPM_BUILD"),
-                ]),
+                ],
+                linkerSettings: onnxRuntimeTelemetryLinkerSettings),
         .testTarget(name: "OnnxRuntimeBindingsTests",
                     dependencies: ["OnnxRuntimeBindings"],
                     path: "swift/OnnxRuntimeBindingsTests",
@@ -56,7 +71,8 @@ let package = Package(
                 path: "extensions",
                 cxxSettings: [
                     .define("ORT_SWIFT_PACKAGE_MANAGER_BUILD"),
-                ]),
+                ],
+                linkerSettings: onnxRuntimeTelemetryLinkerSettings),
         .testTarget(name: "OnnxRuntimeExtensionsTests",
                     dependencies: ["OnnxRuntimeExtensions", "OnnxRuntimeBindings"],
                     path: "swift/OnnxRuntimeExtensionsTests",
