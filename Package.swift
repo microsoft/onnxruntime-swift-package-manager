@@ -19,7 +19,7 @@ import class Foundation.ProcessInfo
 
 let package = Package(
     name: "onnxruntime",
-    platforms: [.iOS(.v15),
+    platforms: [.iOS("15.1"),
                 .macOS(.v14)],
     products: [
         .library(name: "onnxruntime",
